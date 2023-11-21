@@ -90,4 +90,7 @@ https://www.google.com/search?q=Autonomous+Image-based+Exploration+for+Mobile+Ro
 https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4543622
 https://arxiv.org/pdf/2305.17783.pdf
 https://medium.com/@jeremy-k/unlocking-openai-clip-part-2-image-similarity-bf0224ab5bb0
+
+Dataset
+https://web.mit.edu/torralba/www/indoor.html
 """
