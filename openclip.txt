@@ -1,0 +1,87 @@
+# https://colab.research.google.com/github/mlfoundations/open_clip/blob/master/docs/Interacting_with_open_clip.ipynb
+
+
+import urllib.request
+import time
+
+url = "https://raw.githubusercontent.com/blu-y/review/main/kit1.jpg"
+urllib.request.urlretrieve(url, "kit1.jpg")
+kit1 = Image.open("kit1.jpg")
+url = "https://raw.githubusercontent.com/blu-y/review/main/office1.jpg"
+urllib.request.urlretrieve(url, "office1.jpg")
+office1 = Image.open("office1.jpg")
+url = "https://raw.githubusercontent.com/blu-y/review/main/office2.jpg"
+urllib.request.urlretrieve(url, "office2.jpg")
+office2 = Image.open("office2.jpg")
+url = "https://raw.githubusercontent.com/blu-y/review/main/kit2.jpg"
+urllib.request.urlretrieve(url, "kit2.jpg")
+kit2 = Image.open("kit2.jpg")
+url = "https://raw.githubusercontent.com/blu-y/review/main/pc.jpg"
+urllib.request.urlretrieve(url, "pc.jpg")
+pc = Image.open("pc.jpg")
+url = "https://raw.githubusercontent.com/blu-y/review/main/dish1.jpg"
+urllib.request.urlretrieve(url, "dish.jpg")
+dish = Image.open("dish.jpg")
+
+original_images = []
+images = []
+original_images.append(kit1)
+original_images.append(kit2)
+original_images.append(office1)
+original_images.append(office2)
+original_images.append(pc)
+original_images.append(dish)
+images.append(preprocess(kit1))
+images.append(preprocess(kit2))
+images.append(preprocess(office1))
+images.append(preprocess(office2))
+images.append(preprocess(pc))
+images.append(preprocess(dish))
+
+image_input = torch.tensor(np.stack(images))
+text_tokens = tokenizer.tokenize(["This is " + desc for desc in texts])
+
+with torch.no_grad():
+    image_features = model.encode_image(image_input).float()
+    text_features = model.encode_text(text_tokens).float()
+
+image_features[0].size()
+
+kk = torch.dot(image_features[0],image_features[1])
+ko1 = torch.dot(image_features[0],image_features[2])
+ko2 = torch.dot(image_features[0],image_features[3])
+ko3 = torch.dot(image_features[1],image_features[2])
+ko4 = torch.dot(image_features[1],image_features[3])
+oo = torch.dot(image_features[2],image_features[3])
+print(kk, oo, ko1, ko2, ko3, ko4)
+
+kp = torch.dot(image_features[0],image_features[4])
+kd = torch.dot(image_features[0],image_features[5])
+op = torch.dot(image_features[2],image_features[4])
+od = torch.dot(image_features[2],image_features[5])
+print(kp, kd, op, od)
+
+kp = torch.dot(image_features[1],image_features[4])
+kd = torch.dot(image_features[1],image_features[5])
+op = torch.dot(image_features[3],image_features[4])
+od = torch.dot(image_features[3],image_features[5])
+print(kp, kd, op, od)
+
+
+
+"""
+result
+tensor(128.5917) tensor(126.6558) tensor(75.3380) tensor(62.2714) tensor(60.0455) tensor(46.2741)
+tensor(38.8700) tensor(86.6340) tensor(96.1532) tensor(70.9965)
+tensor(42.0420) tensor(78.9529) tensor(69.5386) tensor(34.0043)
+"""
+
+
+"""
+엔트로피 transfer entropy. causation entropy. data 늘리기
+
+https://www.google.com/search?q=Autonomous+Image-based+Exploration+for+Mobile+Robot+Navigation&rlz=1C1YTUH_koKR1031KR1031&oq=Autonomous+Image-based+Exploration+for+Mobile+Robot+Navigation&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg80gEHMjc5ajBqNKgCALACAA&sourceid=chrome&ie=UTF-8
+
+https://arxiv.org/pdf/2305.17783.pdf
+
+"""
