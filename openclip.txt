@@ -79,9 +79,12 @@ tensor(42.0420) tensor(78.9529) tensor(69.5386) tensor(34.0043)
 
 """
 엔트로피 transfer entropy. causation entropy. data 늘리기
+cosine similarity (A dot B) / (||A||||B||)
+soft cosine measure
 
 https://www.google.com/search?q=Autonomous+Image-based+Exploration+for+Mobile+Robot+Navigation&rlz=1C1YTUH_koKR1031KR1031&oq=Autonomous+Image-based+Exploration+for+Mobile+Robot+Navigation&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg80gEHMjc5ajBqNKgCALACAA&sourceid=chrome&ie=UTF-8
 
+https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=4543622
 https://arxiv.org/pdf/2305.17783.pdf
-
+https://medium.com/@jeremy-k/unlocking-openai-clip-part-2-image-similarity-bf0224ab5bb0
 """
