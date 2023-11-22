@@ -81,6 +81,7 @@ tensor(42.0420) tensor(78.9529) tensor(69.5386) tensor(34.0043)
 
 
 """
+KL distance KL divergence
 엔트로피 transfer entropy. causation entropy. data 늘리기
 cosine similarity (A dot B) / (||A||||B||)
 soft cosine measure
