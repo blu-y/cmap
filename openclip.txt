@@ -3,6 +3,7 @@
 # torch 2.1.0
 # cuda 11.8
 # nvidia 525.105.17
+# https://webnautes.tistory.com/1844
 
 import urllib.request
 import time
