@@ -1,0 +1,3 @@
+/home/oscar/cplan/vslam/ch2/build/CMakeFiles/eigenMatrix.dir
+/home/oscar/cplan/vslam/ch2/build/CMakeFiles/edit_cache.dir
+/home/oscar/cplan/vslam/ch2/build/CMakeFiles/rebuild_cache.dir
