@@ -1,2 +1,5 @@
-dataset/*
+dataset/files/
+dataset/rh.db
+dataset/*.tgz
+dataset/result/*
 ViT-B-16-SigLIP/open_clip_pytorch_model.bin
