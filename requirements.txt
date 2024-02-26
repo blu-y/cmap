@@ -1,0 +1,5 @@
+robotathome
+open_clip_torch
+opencv-python
+matplotlib
+ipython
