@@ -1,5 +1,3 @@
-dataset/files/
-dataset/rh.db
-dataset/*.tgz
-dataset/result/*
+dataset/
+!dataset/rh_schema_brief.pdf
 ViT-B-16-SigLIP/open_clip_pytorch_model.bin
