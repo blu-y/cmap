@@ -12,11 +12,12 @@
 #### 2024-02-23
 - Windows에서 ROS2 환경 설정 [🔗](log/240223.md)
 - Turtlebot Topic subscribe
+- teleop_twist_keyboard 설치 [🔗](log/240223.md)
 - Simple LiDAR Subscriber 작성 [🔗](log/240223_1.md)
 
 #### 2024-02-26
-- Dataset searching, setting [🔗](log/240226.md)
-- CLIP model setting [🔗](log/240226.md)
-- Semi-experiment: CLIP inference test [🔗](log/240226.md)
+- Dataset searching, setting [🔗](log/240226.md#robothome2-dataset)
+- CLIP model setting [🔗](log/240226.md#clip-model-setting)
+- Semi-experiment: CLIP inference test [🔗](log/240226.md#semi-experiment-clip-inference-test)
 
 ####
