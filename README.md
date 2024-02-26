@@ -1,1 +1,3 @@
-# cplan
+# CMAP
+
+#### [Research Log](/Log.md)

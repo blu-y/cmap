@@ -1,0 +1,22 @@
+
+#### 2024-02-21
+- 연구실 청소
+- 책상 배치 변경 및 배선정리
+- 라이센스 서버 컴퓨터 설정
+- 새로운 데스크탑 조립 및 세팅
+
+#### 2024-02-22
+- Windows에서 ROS2 설치 [🔗](/log/240222.md)
+- ROS2 Talker, Listener test
+
+#### 2024-02-23
+- Windows에서 ROS2 환경 설정 [🔗](log/240223.md)
+- Turtlebot Topic subscribe
+- LiDAR Subscriber script 작성 [🔗](log/240223_1.md)
+
+#### 2024-02-26
+- Dataset searching, setting [🔗](log/240226.md)
+- CLIP model setting [🔗](log/240226.md)
+- Semi-experiment: CLIP inference test [🔗](log/240226.md)
+
+####
