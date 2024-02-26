@@ -16,8 +16,9 @@
 - Simple LiDAR Subscriber 작성 [🔗](log/240223_1.md)
 
 #### 2024-02-26
+- Ubuntu에서 Windows 프로그램 설치 [🔗](log/240223.md#ubuntu에서-windows-프로그램-설치)
 - Dataset searching, setting [🔗](log/240226.md#robothome2-dataset)
 - CLIP model setting [🔗](log/240226.md#clip-model-setting)
 - Semi-experiment: CLIP inference test [🔗](log/240226.md#semi-experiment-clip-inference-test)
 
-####
+#### 2024-02-27
