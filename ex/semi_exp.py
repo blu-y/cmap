@@ -12,8 +12,11 @@ from PIL import Image
 from open_clip import create_model_from_pretrained, get_tokenizer # works on open-clip-torch>=2.23.0, timm>=0.9.8
 import os
 os.chdir(os.path.expanduser("~")+'/cmap')
-model, preprocess = create_model_from_pretrained('ViT-B-16-SigLIP', pretrained='./ViT-B-16-SigLIP/open_clip_pytorch_model.bin')
-tokenizer = get_tokenizer('ViT-B-16-SigLIP')
+# model, preprocess = create_model_from_pretrained('ViT-B-16-SigLIP', pretrained='./ViT-B-16-SigLIP/open_clip_pytorch_model.bin')
+# tokenizer = get_tokenizer('ViT-B-16-SigLIP')
+
+model, preprocess = create_model_from_pretrained('ViT-B-32-256', pretrained='./ViT-B-32-256/open_clip_pytorch_model.bin')
+tokenizer = get_tokenizer('ViT-B-32-256')
 
 from robotathome import RobotAtHome
 from robotathome import logger, log, set_log_level
@@ -52,10 +55,11 @@ ids = df.id.tolist()
 ##########################################
 
 feature_path = './result/'
+fn = 'semi_exp_32.pkl'
 labels_list = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
 overwrite = True
 
-feature_file = os.path.join(feature_path, 'semi_exp.pkl')
+feature_file = os.path.join(feature_path, fn)
 if not(os.path.exists(feature_file)) or overwrite:
     start = time()
     features = []
@@ -69,7 +73,7 @@ if not(os.path.exists(feature_file)) or overwrite:
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 image_features = image_features[0].tolist()
             except:
-                image_features = [0] * 768
+                image_features = [0.0] * 768
             features.append(image_features)
     print('average time: ', (time()-start)/len(ids))
 
