@@ -2,4 +2,5 @@
 dataset/
 ViT-B-16-SigLIP/open_clip_pytorch_model.bin
 ViT-B-32-256/open_clip_pytorch_model.bin
+ViT-B-32/open_clip_pytorch_model.bin
 .vscode/

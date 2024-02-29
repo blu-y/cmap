@@ -15,11 +15,11 @@ os.chdir(os.path.expanduser("~")+'/cmap')
 # model, preprocess = create_model_from_pretrained('ViT-B-16-SigLIP', pretrained='./ViT-B-16-SigLIP/open_clip_pytorch_model.bin')
 # tokenizer = get_tokenizer('ViT-B-16-SigLIP')
 
-model, preprocess = create_model_from_pretrained('ViT-B-32-256', pretrained='./ViT-B-32-256/open_clip_pytorch_model.bin')
-tokenizer = get_tokenizer('ViT-B-32-256')
+model, preprocess = create_model_from_pretrained('ViT-B-32', pretrained='./ViT-B-32/open_clip_pytorch_model.bin')
+tokenizer = get_tokenizer('ViT-B-32')
 
-from robotathome import RobotAtHome
-from robotathome import logger, log, set_log_level
+from robotathome import RobotAtHome, logger
+from robotathome import log, set_log_level
 from robotathome import time_win2unixepoch, time_unixepoch2win
 from robotathome import get_labeled_img, plot_labeled_img
 
@@ -47,19 +47,21 @@ ids = df.id.tolist()
 # print(df.head())
 # print(df.info())
 
-
-################ For debug ###############
-# df = df[df.index % 100 == 0]             #
-# df = df.reset_index(drop=True)           #
-# ids = df.id.tolist()                     #
-##########################################
-
+############################# CLIP Options Here ############################
 feature_path = './result/'
 fn = 'semi_exp_32.pkl'
 labels_list = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
 overwrite = True
+############################################################################
 
+
+################ For 1/100 scale test ###############
+df = df[df.index % 100 == 0]
+df = df.reset_index(drop=True)
+ids = df.id.tolist()
+#####################################################
 feature_file = os.path.join(feature_path, fn)
+emb_dim = model.positional_embedding.size()[1]
 if not(os.path.exists(feature_file)) or overwrite:
     start = time()
     features = []
@@ -73,10 +75,10 @@ if not(os.path.exists(feature_file)) or overwrite:
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 image_features = image_features[0].tolist()
             except:
-                image_features = [0.0] * 768
+                image_features = [0.0] * emb_dim
             features.append(image_features)
     print('average time: ', (time()-start)/len(ids))
-
+    print(len(image_features), emb_dim)
     if not os.path.exists('./result'): os.makedirs('./result')
     with open(feature_file,"wb") as f:
         pickle.dump(features, f)
