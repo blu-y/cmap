@@ -56,9 +56,9 @@ overwrite = True
 
 
 ################ For 1/100 scale test ###############
-df = df[df.index % 100 == 0]
-df = df.reset_index(drop=True)
-ids = df.id.tolist()
+# df = df[df.index % 100 == 0]
+# df = df.reset_index(drop=True)
+# ids = df.id.tolist()
 #####################################################
 feature_file = os.path.join(feature_path, fn)
 emb_dim = model.positional_embedding.size()[1]
