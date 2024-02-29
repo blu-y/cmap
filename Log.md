@@ -20,6 +20,7 @@
 - Dataset searching, setting [🔗](log/04_exp_setting.md#robothome2-dataset)
 - CLIP model setting [🔗](log/04_exp_setting.md#clip-model-setting)
 - Semi-experiment: CLIP inference test [🔗](log/05_semi-exp#semi-experiment-clip-inference-test)
+
 #### 2024-02-27
 - Semi-experiment with other CLIP model [🔗](log/05_semi-exp#semi-experiment-clip-inference-test)
     - Result: 
