@@ -30,4 +30,11 @@
     - Laptop으로 실험하여 원하는 처리속도 (<30ms) 달성 X, 데스크탑용 GPU로 재실험 예정
 
 #### 2024-02-28
-- Dataset API [🔗](log/240226.md#robothome2-dataset)
+- Dataset API 정리 [🔗](log/06_robotathome.md#robothome2-dataset)
+
+#### 2024-03-04
+- Dataset에서 좌표 추출 후 visualization(예정) [🔗](log/05_semi-exp#semi-experiment-visualization)
+
+#### 2024-03-05
+- PCA Visualization을 위한 general data 추출(예정)
+- PCA Visualization(예정) [🔗](log/05_semi-exp#semi-experiment-pca-visualization)

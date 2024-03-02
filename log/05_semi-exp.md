@@ -2,7 +2,7 @@
 ```
 pip install ipywidgets # for jupyter
 ```
-Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp.ipynb)
+Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_clip.ipynb)
 
 Init model
 ![Init model](../sources/240226_1_init.png)
@@ -22,3 +22,9 @@ Result
 ![kitchen](../result/semi_exp/kitchen.png)
 ![a television](../result/semi_exp/a_television.png)
 ![livingroom](../result/semi_exp/livingroom.png)
+
+## Semi-experiment: Visualization
+Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_viz.ipynb)
+
+## Semi-experiment: PCA Visualization
+Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_pca.ipynb)
