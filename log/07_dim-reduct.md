@@ -59,9 +59,16 @@ class PCA:
 [Jupyter demo](https://github.com/blu-y/cmap/blob/main/ex/dim_reduct_pca.ipynb)  
   
 ##### Result
-잘 나오긴 하였으나, 좌표계가 room 마다 새로시작되는 것 같음.
-data의 좌표가 같은 home에서 이어져 있는지 살펴볼 필요가 있음
-![result](../result/semi_exp/pca_viewpoint.png)
+잘 나오긴 하였으나, 좌표계가 room 마다 새로시작되는 것 같음.  
+데이터를 살펴보니, data의 좌표가 같은 다른 방에 들어갈 때마다 0,0으로 초기화 되는 것을 확인할 수 있었다.  
+따라서 방을 전환하는 부분에서 어떻게 변하는지 살펴보기 위해선 직접 dataset을 제작하여야 할 것 같다.  
+![result](../result/semi_exp/pca_viewpoint.png)  
+다음은 bathroom, bedroom, kitchen, livingroom에 대해 pca 적용한 결과이다.  
+생각보다 각 방의 특징을 잘 나타내지 못하고 눈으로 해당 화살표가 어느 방에 해당하는지 판단하기 어렵다.  
+![result](../result/semi_exp/pca_label.png)  
+text의 정보가 image보다 그렇게 크게 나타나지 않는 듯 하다.  
+원래 계획은 아래를 위 사진에 legend 처럼 추가하여 참고하려 하였는데, 그런 방법을 사용하려면 따로 데이터 처리를 하거나, 직접 labeling하거나 labeling 된 데이터의 평균을 구하여 그것을 대푯값으로 활용하여야 할 듯 하다.  
+또한 이번 다른 session에서도 실행해봐서 다른 사람의 kitchen에서는 비슷한 색이 나오는지 확인할 필요가 있을 것 같다.  
 
 ##### Explained Variance Ratio
 

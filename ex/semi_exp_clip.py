@@ -90,7 +90,7 @@ class CLIP:
         df_f = pd.concat([df, features], axis=1)
 
         text_features = self.encode_text(label_list = label_list)
-
+    
         similarity = self.similarity(image_features, text_features)
         similarity = pd.DataFrame(similarity, columns=label_list)
 
