@@ -4,7 +4,7 @@
 
 #### Windows에서 md5 checksum
 PowerShell 실행
-```
+```ps
 certutil -hashfile <filename> md5
 ```
 

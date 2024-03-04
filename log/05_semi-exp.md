@@ -1,5 +1,5 @@
 ## Semi-experiment: CLIP inference test
-```
+```bash
 pip install ipywidgets # for jupyter
 ```
 Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_clip.ipynb)
@@ -25,6 +25,3 @@ Result
 
 ## Semi-experiment: Visualization
 Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_viz.ipynb)
-
-## Semi-experiment: PCA Visualization
-Jupyter demo [🔗](https://github.com/blu-y/cmap/blob/main/ex/semi_exp_pca.ipynb)
