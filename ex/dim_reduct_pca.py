@@ -103,15 +103,13 @@ if __name__ == '__main__':
     df_p = pca_color(df_p)
     plot_viewpoint(df_p, 5, color=True)
 
-    from PIL import Image
-    import cv2
-    cv2.namedWindow('img')
-    cv2.namedWindow('room')
-    
-    for id in ids:
-        [img_f, _] = rh.get_RGBD_files(id)
-        image = Image.open(img_f).convert('RGB')
-        image = np.array(image)
-        cv2.imshow('img', image) 
-        key = cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # from PIL import Image
+    # import cv2
+    # cv2.namedWindow('img')
+    # for id in ids:
+    #     [img_f, _] = rh.get_RGBD_files(id)
+    #     image = Image.open(img_f).convert('RGB')
+    #     image = np.array(image)
+    #     cv2.imshow('img', image) 
+    #     key = cv2.waitKey(0)
+    # cv2.destroyAllWindows()
