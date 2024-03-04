@@ -19,10 +19,10 @@
 - Ubuntu에서 Windows 프로그램 설치 [-](log/02_ros2win_setting.md#ubuntu에서-windows-프로그램-설치)
 - Dataset searching, setting [🔗](log/04_exp_setting.md#robothome2-dataset)
 - CLIP model setting [🔗](log/04_exp_setting.md#clip-model-setting)
-- Semi-experiment: CLIP inference test [🔗](log/05_semi-exp#semi-experiment-clip-inference-test)
+- Semi-experiment: CLIP inference test [🔗](log/05_semi-exp.md#semi-experiment-clip-inference-test)
 
 #### 2024-02-27
-- Semi-experiment with other CLIP model [🔗](log/05_semi-exp#semi-experiment-clip-inference-test)
+- Semi-experiment with other CLIP model [🔗](log/05_semi-exp.md#semi-experiment-clip-inference-test)
     - Result: 
     5 fps (200ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
     10 fps (100ms) / i7-11370H / GeForce MX450 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
@@ -33,8 +33,14 @@
 - Dataset API 정리 [🔗](log/06_robotathome.md#robothome2-dataset)
 
 #### 2024-03-04
-- Dataset에서 좌표 추출 후 visualization(예정) [🔗](log/05_semi-exp#semi-experiment-visualization)
+- Dataset에서 좌표 추출 후 visualization [🔗](log/05_semi-exp.md#semi-experiment-visualization)
 
-#### 2024-03-05
-- PCA Visualization을 위한 general data 추출(예정)
-- PCA Visualization(예정) [🔗](log/05_semi-exp#semi-experiment-pca-visualization)
+#### 2024-03-05 (예정)
+- Dimension reduction을 위한 general data 추출
+- PCA dimension reduction for visualization [🔗](log/07_dim-reduct.md)
+
+#### 2024-03-06 (예정)
+- Other dimension reduction technique 조사 (NMF, SVD, ICA) [🔗](log/07_dim-reduct.md)
+
+#### 2024-03-07 (예정)
+- NMF, SVD, ICA for visualization [🔗](log/07_dim-reduct.md)
