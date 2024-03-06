@@ -44,9 +44,9 @@
 #### 2024-03-06
 - Semi-exp with desktop
     - Result: 
-     fps ( ms) / i5-13400F / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
-     fps ( ms) / i5-13400F / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
-     fps ( ms) / i5-13400F / GeForce RTX3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
+    8.05 fps (124 ms) / i5-13400F / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
+    19.57 fps (51 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
+    23.09 fps (43 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
 
 #### 2024-03-07~12 (예정)
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
