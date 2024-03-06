@@ -51,7 +51,7 @@
 #### 2024-03-07~12 (예정)
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
 - Semi-exp with Jetson TX2
-- Collect data
+- Preparation for data collecting
 
 
 #### TODO
