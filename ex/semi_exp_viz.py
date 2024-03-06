@@ -18,27 +18,26 @@ def separate_session(df):
     return dfs
 
 def separate_room(df):
-    hsi = df.home_session_id.unique()
+    hsi = df.room_id.unique()
     hsi.sort()
-    dfs = []
+    dfr = []
     for i in hsi:
-        _df = df.loc[df.home_session_id==i]
+        _df = df.loc[df.room_id==i]
         _df = _df.loc[df.sensor_name=="RGBD_1"]
-        _df = _df.sort_values(by='room_id')
+        _df = _df.sort_values('timestamp')
         _df = _df.reset_index(drop=True)
-        counts = _df.room_id.value_counts()
-        dfs.append(_df)
-    return dfs
+        dfr.append(_df)
+    return dfr
 
 def y_to_uv(yaw):
     return np.cos(yaw), np.sin(yaw)
 
-def plot_viewpoint(df, scale=5, size=1/20, color=False):
+def plot_viewpoint(df, scale=5, size=1/20, color=False, fig='viewpoint'):
     df = df.sort_values("timestamp")
     df = df.reset_index(drop=True)
     df = df.loc[df.index%scale==0]
     df = df.reset_index(drop=True)
-    fig = plt.figure('viewpoint')
+    fig = plt.figure(fig)
     ax = fig.add_subplot(111)
     for index, row in df.iterrows():
         dx, dy = y_to_uv(row['sensor_pose_yaw'])
