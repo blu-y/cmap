@@ -55,6 +55,7 @@
 
 
 #### TODO
+- 오검출 교차검증 필요, 알고리즘 보완해야함
 - CLIP vector가 이미 normalized된 건지?
 - data diet
 - filtering points with multi camera view
