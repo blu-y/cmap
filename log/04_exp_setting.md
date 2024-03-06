@@ -61,8 +61,8 @@ git clone https://github.com/blu-y/cmap.git
 cd cmap
 mkdir -p dataset/files
 cd dataset
-wget https://zenodo.org/records/7811795/files/Robot%40Home2_files.tgz?download=1
-wget https://zenodo.org/records/7811795/files/Robot%40Home2_db.tgz?download=1
+wget https://zenodo.org/records/7811795/files/Robot%40Home2_files.tgz
+wget https://zenodo.org/records/7811795/files/Robot%40Home2_db.tgz
 md5sum Robot@Home2_db.tgz Robot@Home2_files.tgz
 ```
 Check md5 checksum:
