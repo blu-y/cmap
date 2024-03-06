@@ -17,6 +17,19 @@ def separate_session(df):
         dfs.append(_df)
     return dfs
 
+def separate_room(df):
+    hsi = df.home_session_id.unique()
+    hsi.sort()
+    dfs = []
+    for i in hsi:
+        _df = df.loc[df.home_session_id==i]
+        _df = _df.loc[df.sensor_name=="RGBD_1"]
+        _df = _df.sort_values(by='room_id')
+        _df = _df.reset_index(drop=True)
+        counts = _df.room_id.value_counts()
+        dfs.append(_df)
+    return dfs
+
 def y_to_uv(yaw):
     return np.cos(yaw), np.sin(yaw)
 

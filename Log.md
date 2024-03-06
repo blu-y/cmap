@@ -37,7 +37,7 @@
 - Dimension reduction을 위한 general data 추출
 - 기존 작업물 함수화
 
-#### 2024-03-05 (예정)
+#### 2024-03-05
 - PCA dimension reduction for visualization [🔗](log/07_dim-reduct.md#pca)
     - Result: 잘 나오긴 하였으나, 좌표계가 room 마다 새로시작되는 것 같음. data의 좌표가 home session 안에서 이어져 있는지 살펴볼 필요가 있음 
 
