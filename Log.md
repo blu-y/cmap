@@ -24,9 +24,9 @@
 #### 2024-02-27
 - Semi-experiment with other CLIP model [🔗](log/05_semi-exp.md#semi-experiment-clip-inference-test)
     - Result: 
-    5 fps (200 ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
-    10 fps (100 ms) / i7-11370H / GeForce MX450 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
-    10 fps (100 ms) / i7-11370H / GeForce MX450 / ViT-B-32(151.28M params, 14.78B FLOPs)
+    5 fps (200 ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    10 fps (100 ms) / i7-11370H / GeForce MX450 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+    10 fps (100 ms) / i7-11370H / GeForce MX450 / ViT-B-32(151.28M params, 14.78B FLOPs)  
     - Laptop으로 실험하여 원하는 처리속도 (<30ms) 달성 X, 데스크탑용 GPU로 재실험 예정
 
 #### 2024-02-28
@@ -44,8 +44,8 @@
 #### 2024-03-06
 - Semi-exp with desktop
     - Result: 
-    8.05 fps (124 ms) / i5-13400F / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
-    19.57 fps (51 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
+    8.05 fps (124 ms) / i5-13400F / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    19.57 fps (51 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
     23.09 fps (43 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
 
 #### 2024-03-07~12 (예정)
