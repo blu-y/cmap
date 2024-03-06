@@ -41,22 +41,20 @@
 - PCA dimension reduction for visualization [🔗](log/07_dim-reduct.md#pca)
     - Result: 잘 나오긴 하였으나, 좌표계가 room 마다 새로시작되는 것 같음. data의 좌표가 home session 안에서 이어져 있는지 살펴볼 필요가 있음 
 
-#### 2024-03-06
+#### 2024-03-06~12 (예정)
 - Semi-exp with desktop
     - Result: 
      fps ( ms) / i5- / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
      fps ( ms) / i5- / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)
      fps ( ms) / i5- / GeForce RTX3090 / ViT-B-32(151.28M params, 14.78B FLOPs) 
-
-#### 2024-03-07~10 (예정)
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
-- Other dimension reduction technique 조사 (NMF, SVD, ICA) [🔗](log/07_dim-reduct.md)
-- NMF, SVD, ICA for visualization [🔗](log/07_dim-reduct.md)
+
 
 #### TODO
 - CLIP vector가 이미 normalized된 건지?
 - data diet
-- GUI, search, sort
 - filtering points with multi camera view
 - how to choose keyframe (현재 사용하는 방식 조사, 보완)
 - saving lesser dimension with dimension reduction techniques
+- Other dimension reduction techniques (NMF, SVD, ICA)
+- GUI, search, sort
