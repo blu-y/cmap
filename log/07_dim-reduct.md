@@ -70,7 +70,7 @@ text의 정보가 image보다 그렇게 크게 나타나지 않는 듯 하다.
 원래 계획은 아래를 위 사진에 legend 처럼 추가하여 참고하려 하였는데, 그런 방법을 사용하려면 따로 데이터 처리를 하거나, 직접 labeling하거나 labeling 된 데이터의 평균을 구하여 그것을 대푯값으로 활용하여야 할 듯 하다.  
 또한 이번 다른 session에서도 실행해봐서 다른 사람의 kitchen에서는 비슷한 색이 나오는지 확인할 필요가 있을 것 같다.  
 ##### Other session
-session2
+session2  
 ![result](../result/semi_exp/pca_viewpoint_s2.png) 
 
 
