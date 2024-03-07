@@ -63,3 +63,5 @@
 - saving lesser dimension with dimension reduction techniques
 - Other dimension reduction techniques (NMF, SVD, ICA)
 - GUI, search, sort
+
+- github classroom / autograding
