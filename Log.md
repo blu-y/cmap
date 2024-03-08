@@ -17,6 +17,7 @@
 
 #### 2024-02-26
 - Ubuntu에서 Windows 프로그램 설치 [-](log/02_ros2win_setting.md#ubuntu에서-windows-프로그램-설치)
+- Environment setting [🔗](log/04_exp_setting.md#environment-setting)
 - Dataset searching, setting [🔗](log/04_exp_setting.md#robothome2-dataset)
 - CLIP model setting [🔗](log/04_exp_setting.md#clip-model-setting)
 - Semi-experiment: CLIP inference test [🔗](log/05_semi-exp.md#semi-experiment-clip-inference-test)
