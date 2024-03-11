@@ -74,17 +74,4 @@ session2
 ![result](../result/semi_exp/pca_viewpoint_s2.png) 
 
 
-##### Explained Variance Ratio
-
-#### NMF
-```python
-
-```
-#### SVD
-```python
-
-```
-#### ICA
-```python
-
-```
+#### Explained Variance Ratio

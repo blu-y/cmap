@@ -42,18 +42,19 @@
 - PCA dimension reduction for visualization [🔗](log/07_dim-reduct.md#pca)
     - Result: 잘 나오긴 하였으나, 좌표계가 room 마다 새로시작되는 것 같음. data의 좌표가 home session 안에서 이어져 있는지 살펴볼 필요가 있음 
 
-#### 2024-03-06
+#### 2024-03-07
 - Semi-exp with desktop
     - Result: 
-    8.05 fps (124 ms) / i5-13400F / GeForce RTX3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
-    19.57 fps (51 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
-    23.09 fps (43 ms) / i5-13400F / GeForce RTX3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
+    8.05 fps (124 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    19.57 fps (51 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+    23.09 fps (43 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
 
-#### 2024-03-07~12 (예정)
+#### 2024-03-08
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
-- Semi-exp with Jetson TX2
-- Preparation for data collecting
 
+#### 2024-03-11~
+- Semi-exp with Jetson TX2
+- Preparation for data collecting [🔗](log/08_datagen.md)
 
 #### TODO
 - 오검출 교차검증 필요, 알고리즘 보완해야함
