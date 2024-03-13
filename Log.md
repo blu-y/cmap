@@ -51,6 +51,7 @@
 
 #### 2024-03-08
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
+    - Explained variance ratio: [0.080, 0.064, 0.052]
 
 #### 2024-03-11~
 - ~~Semi-exp with Jetson TX2~~
