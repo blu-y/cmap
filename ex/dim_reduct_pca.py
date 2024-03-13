@@ -28,7 +28,8 @@ class PCA:
         try:
             with open(profile, "rb") as f:
                 _profile = pickle.load(f)
-            [self.mean, self.std, self.top_evec] = _profile
+            # [self.mean, self.std, self.top_evec] = _profile
+            [self.mean, self.std, self.top_evec, self.explained_variance_ratio_] = _profile
         except: print("No profile data, use .fit to fit data")
 
     def fit(self, data, fn=None, n=3):
@@ -44,19 +45,26 @@ class PCA:
         sorted_eigenvectors = self.eivec[:, self.ind]
         self.top_evec = sorted_eigenvectors[:, :n]
         self.data_pca = np.dot(vec_std, self.top_evec)
+        # Calculate explained variance ratio
+        total_variance = sum(self.eival)
+        self.explained_variance_ratio_ = [eigval / total_variance for eigval in self.eival[self.ind][:n]]
+        
         if fn is None:
             if not os.path.exists('./result'): os.makedirs('./result')
             t = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             fn='./result/pca_profile_'+str(t)+'.pkl'
             with open(fn,"wb") as f:
-                pickle.dump([self.mean, self.std, self.top_evec], f)
+                pickle.dump([self.mean, self.std, self.top_evec, self.explained_variance_ratio_], f)
+                # pickle.dump([self.mean, self.std, self.top_evec], f)
             print('Profile saved at :', fn)
         else: 
             with open(fn,"wb") as f:
-                pickle.dump([self.mean, self.std, self.top_evec], f)
+                pickle.dump([self.mean, self.std, self.top_evec, self.explained_variance_ratio_], f)
+                # pickle.dump([self.mean, self.std, self.top_evec], f)
         self.data_pca = pd.DataFrame(self.data_pca, columns=['pca0', 'pca1', 'pca2'])
         print('min :', self.data_pca.min(axis=0))
         print('max :', self.data_pca.max(axis=0))
+        print('Explained variance ratio:', self.explained_variance_ratio_)
         
         return pd.concat([data, self.data_pca], axis=1)
 
@@ -78,30 +86,30 @@ class PCA:
         return pd.concat([data, self.n_data_pca], axis=1)
 
 if __name__ == '__main__':
-    # ### from scratch
-    # # Load data & CLIP
-    # rh, df, ids = load_dataset('RGBD_1', scale=None)
-    # clip = CLIP(model='ViT-B-32', overwrite=False)
-    # df_s, df_f = clip.encode_rh(rh, df, ids)
-    # # PCA
-    # pca = PCA()
-    # df_p = pca.fit(df_f)
+    ### from scratch
+    # Load data & CLIP
+    rh, df, ids = load_dataset('RGBD_1', scale=None)
+    clip = CLIP(model='ViT-B-32', overwrite=False)
+    df_s, df_f = clip.encode_rh(rh, df, ids)
+    # PCA
+    pca = PCA()
+    df_p = pca.fit(df_f)
 
     ### from existing pca profile
     # Load and select data & CLIP
-    rh, df, ids = load_dataset('RGBD_1', scale=None)
-    dfs = separate_session(df)
-    df = dfs[0]
-    df = df.sort_values("timestamp")
-    df = df.reset_index(drop=True)
-    ids = get_ids(df)
-    clip = CLIP(model='ViT-B-32', fn='s1')
-    df_s, df_f = clip.encode_rh(rh, df, ids)
-    # PCA
-    pca = PCA(profile='./result/pca_profile.pkl')
-    df_p = pca.transform(df_f)
-    df_p = pca_color(df_p)
-    plot_viewpoint(df_p, 5, color=True)
+    # rh, df, ids = load_dataset('RGBD_1', scale=None)
+    # dfs = separate_session(df)
+    # df = dfs[0]
+    # df = df.sort_values("timestamp")
+    # df = df.reset_index(drop=True)
+    # ids = get_ids(df)
+    # clip = CLIP(model='ViT-B-32', fn='s1')
+    # df_s, df_f = clip.encode_rh(rh, df, ids)
+    # # PCA
+    # pca = PCA(profile='./result/pca_profile.pkl')
+    # df_p = pca.transform(df_f)
+    # df_p = pca_color(df_p)
+    # plot_viewpoint(df_p, 5, color=True)
 
     # from PIL import Image
     # import cv2
