@@ -75,3 +75,8 @@ session2
 
 
 #### Explained Variance Ratio
+```python
+EVR = eigenvalue / total_variance
+```
+Explained Variance Ratio: [0.0796, 0.0644, 0.0522, 0.0445, 0.0371, 0.0337, 0.0282, 0.0248, 0.0231, 0.02, 0.0176, 0.0173, 0.016, 0.0151, 0.0138, 0.0126, 0.0121, 0.0119, 0.0111, 0.0103, 0.0103, 0.0099, ...]
+![pca_evr](../image/pca_evr.png) 
