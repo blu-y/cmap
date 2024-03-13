@@ -82,4 +82,4 @@ Explained Variance Ratio: [0.0796, 0.0644, 0.0522, 0.0445, 0.0371, 0.0337, 0.028
 Accumulated Explained Variance Ratio: [0.0796, 0.144, 0.1962, 0.2407, 0.2778, 0.3115, 0.3397, 0.3645, 0.3876, 0.4076, 0.4252, 0.4425, 0.4585, 0.4736, 0.4874, 0.5, 0.5121, 0.524, 0.5351, 0.5454, 0.5557, 0.5656, ... ]  
 
 ![pca_evr](../image/pca_evr.png) 
-![pca_evr](../image/pca_evr22.png) 
+![pca_evr22](../image/pca_evr22.png) 
