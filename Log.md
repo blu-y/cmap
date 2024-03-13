@@ -53,7 +53,7 @@
 - PCA explained variance ratio 계산 [🔗](log/07_dim-reduct.md#pca)
 
 #### 2024-03-11~
-- Semi-exp with Jetson TX2
+- ~~Semi-exp with Jetson TX2~~
 - Preparation for data collecting [🔗](log/08_datagen.md)
 
 #### TODO
