@@ -54,7 +54,31 @@
     - Explained variance ratio: [0.080, 0.064, 0.052] >> 20% variance explained with 3 dimenion
 
 #### 2024-03-11~13
+- Preparation for data collecting [🔗](log/08_datagen.md)
+
+#### 2024-03-14
+- Jetson TX2 environment setting **(suspended)**
+    - Install OS (Jetpack 4.6)
+    - Install pytorch, torchvision
+    - ~~Install Miniconda for python 3.7 or later~~ Aborted 
+        - OpenCLIP not supported in py3.6
+        - CUDA 10.2 not supported in arm conda environmnet
+    - ~~Using default python with `open-clip-torch-any-py3` for py3.6~~ Aborted
+        - No matching dependency for python 3.6 for other packages
+    - Install python 3.7
+        - Run with CPU (no cuda due to low drive space remained)
+        - ~~Run with CUDA~~ *later with SSD equiped*
 - Semi-exp with Jetson TX2
+    - Result: 
+     5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
+
+#### 2024-03-15
+- Semi-exp with Jetson TX2 **(suspended)**
+    - Result: 
+      s / ARM A57 / CPU Only / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+      s / ARM A57 / CPU Only / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+
+#### 2024-03-16~ (예정)
 - Preparation for data collecting [🔗](log/08_datagen.md)
 
 #### TODO

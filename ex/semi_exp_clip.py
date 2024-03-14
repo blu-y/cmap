@@ -14,6 +14,19 @@ from robotathome import RobotAtHome, logger, log
 
 os.chdir(os.path.expanduser("~")+'/cmap')
 
+def separate_session(df):
+    hsi = df.home_session_id.unique()
+    hsi.sort()
+    dfs = []
+    for i in hsi:
+        _df = df.loc[df.home_session_id==i]
+        _df = _df.loc[df.sensor_name=="RGBD_1"]
+        _df = _df.sort_values(by='room_id')
+        _df = _df.reset_index(drop=True)
+        counts = _df.room_id.value_counts()
+        dfs.append(_df)
+    return dfs
+
 def load_rh():
     log.set_log_level('INFO')  # SUCCESS is the default
     level_no, level_name = log.get_current_log_level()
@@ -136,6 +149,14 @@ def plot(df_s, label_list):
 
 if __name__ == '__main__':
     rh, df, ids = load_dataset('RGBD_1', scale=None)
+
+    # for particular session
+    dfs = separate_session(df)
+    df = dfs[0]
+    df = df.sort_values("timestamp")
+    df = df.reset_index(drop=True)
+    ids = get_ids(df)
+
     clip = CLIP(model='ViT-B-32', overwrite=True)
     labels = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
     df_s, df_f = clip.encode_rh(rh, df, ids, label_list=labels)
