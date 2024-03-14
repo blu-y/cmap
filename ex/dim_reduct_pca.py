@@ -25,6 +25,8 @@ def import_vector(df, fn):
 
 class PCA:
     def __init__(self, profile=None, n=3):
+        self.n = n
+        self.columns = ['pca'+str(i) for i in range(self.n)]
         try:
             with open(profile, "rb") as f:
                 _profile = pickle.load(f)
@@ -32,7 +34,7 @@ class PCA:
             [self.mean, self.std, self.top_evec, self.explained_variance_ratio_] = _profile
         except: print("No profile data, use .fit to fit data")
 
-    def fit(self, data, fn=None, n=3):
+    def fit(self, data, fn=None):
         data_pca = None
         vec = self.preprocess(data)
         vec = vec.to_numpy()
@@ -43,11 +45,11 @@ class PCA:
         self.eival, self.eivec = np.linalg.eig(self.cov)
         self.ind = np.argsort(self.eival)[::-1]
         sorted_eigenvectors = self.eivec[:, self.ind]
-        self.top_evec = sorted_eigenvectors[:, :n]
+        self.top_evec = sorted_eigenvectors[:, :self.n]
         self.data_pca = np.dot(vec_std, self.top_evec)
         # Calculate explained variance ratio
         total_variance = sum(self.eival)
-        self.explained_variance_ratio_ = [eigval / total_variance for eigval in self.eival[self.ind][:n]]
+        self.explained_variance_ratio_ = [eigval / total_variance for eigval in self.eival[self.ind][:self.n]]
         
         if fn is None:
             if not os.path.exists('./result'): os.makedirs('./result')
@@ -61,7 +63,7 @@ class PCA:
             with open(fn,"wb") as f:
                 pickle.dump([self.mean, self.std, self.top_evec, self.explained_variance_ratio_], f)
                 # pickle.dump([self.mean, self.std, self.top_evec], f)
-        self.data_pca = pd.DataFrame(self.data_pca, columns=['pca0', 'pca1', 'pca2'])
+        self.data_pca = pd.DataFrame(self.data_pca, columns=self.columns)
         print('min :', self.data_pca.min(axis=0))
         print('max :', self.data_pca.max(axis=0))
         print('Explained variance ratio:', self.explained_variance_ratio_)
