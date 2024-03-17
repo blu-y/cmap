@@ -70,16 +70,11 @@
         - ~~Run with CUDA~~ *later with SSD equiped*
 - Semi-exp with Jetson TX2
     - Result: 
-     5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
+     5.62 s/frame / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
 
-#### 2024-03-15
-- Semi-exp with Jetson TX2 **(suspended)**
-    - Result: 
-      s / ARM A57 / CPU Only / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
-      s / ARM A57 / CPU Only / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
-
-#### 2024-03-16~ (예정)
-- Preparation for data collecting [🔗](log/08_datagen.md)
+#### 2024-03-15~
+- Preparation for data collecting [🔗](log/09_slam.md)
+- Turtlebot4 SLAM, slam_toolbox 코드 분석 [🔗](log/08_datagen.md)
 
 #### TODO
 - 오검출 교차검증 필요, 알고리즘 보완해야함
