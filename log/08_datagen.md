@@ -63,3 +63,19 @@ python3 ./ex/datagen.py
 ```bash
 ros2 bag play rosbag2_2024_03_15-20_17_07
 ```
+#### Datastructure
+```
+cmap  
+└── dataset  
+    └── tb4  
+        ├── image  
+        │   └── image_files.png  
+        ├── pcd 
+        │   └── pcd_files.pcd  
+        ├── db.csv 
+        ├── imu.csv
+        ├── odometry.csv
+        ├── pose.csv
+        ├── tf_static.csv
+        └── tf.csv
+``` 
