@@ -80,6 +80,7 @@
   - turtlebot4_description (URDF)
   - turtlebot4_viz
 - 'GLIBCXX_3.4.30' not found 오류 [🔗](log/00_debug.md#glibcxx_3430-not-found)
+- ImportError: /lib/libgdal.so.30 오류  [🔗](log/00_debug.md#importerror-liblibgdalso30)
 
 
 #### 2024-03-20
