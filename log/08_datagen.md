@@ -56,4 +56,10 @@ ros2 run tf2_ros tf2_echo [source_frame] [target_frame] # to see transform betwe
 |/tf | tf2_msgs/msg/TFMessage|6460|
 * Count is example for 112s rosbag data
 
-
+### Usage
+```bash
+python3 ./ex/datagen.py
+```
+```bash
+ros2 bag play rosbag2_2024_03_15-20_17_07
+```
