@@ -68,6 +68,7 @@
     - Install python 3.7
         - Run with CPU (no cuda due to low drive space remained)
         - ~~Run with CUDA~~ *later with SSD equiped*
+<<<<<<< HEAD
 - Semi-exp with Jetson TX2 **(suspended)**
     - Result: **(Done with CPU)**
      5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
@@ -80,6 +81,15 @@
   - turtlebot4_description (URDF)
   - turtlebot4_viz
 - 'GLIBCXX_3.4.30' not found 오류 [🔗](log/00_debug.md#glibcxx_3430-not-found)
+=======
+- Semi-exp with Jetson TX2
+    - Result: 
+     5.62 s/frame / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
+
+#### 2024-03-15~
+- Preparation for data collecting [🔗](log/09_slam.md)
+- Turtlebot4 SLAM, slam_toolbox 코드 분석 [🔗](log/08_datagen.md)
+>>>>>>> 7d885e7d80b1ee7e1d583fd163ca6b26d2de69d5
 
 #### 2024-03-20
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
