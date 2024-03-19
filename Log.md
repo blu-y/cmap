@@ -56,7 +56,7 @@
 #### 2024-03-11~13
 - Preparation for data collecting [🔗](log/08_datagen.md)
 
-#### 2024-03-14
+#### 2024-03-14~15
 - Jetson TX2 environment setting **(suspended)**
     - Install OS (Jetpack 4.6)
     - Install pytorch, torchvision
@@ -68,19 +68,24 @@
     - Install python 3.7
         - Run with CPU (no cuda due to low drive space remained)
         - ~~Run with CUDA~~ *later with SSD equiped*
-- Semi-exp with Jetson TX2
-    - Result: 
-     5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
-
-#### 2024-03-15
 - Semi-exp with Jetson TX2 **(suspended)**
-    - Result: 
-      s / ARM A57 / CPU Only / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
-      s / ARM A57 / CPU Only / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+    - Result: **(Done with CPU)**
+     5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
+- *separate_session s_x_v >> s_x_c*
 
-#### 2024-03-16~ (예정)
+#### 2024-03-18~19
 - Preparation for data collecting [🔗](log/08_datagen.md)
+  - **slam toolbox에서 pose estimation할 때 odometry를 사용하는지?**
+- Turtlebot4 패키지 코드 분석
+  - turtlebot4_description (URDF)
+  - turtlebot4_viz
+- 'GLIBCXX_3.4.30' not found 오류 [🔗](log/00_debug.md#glibcxx_3430-not-found)
 
+#### 2024-03-20
+- SLAM Toolbox, Turtlebot4 패키지 코드 분석
+  - turtlebot4_navigation
+  - slam_toolbox
+ 
 #### TODO
 - 오검출 교차검증 필요, 알고리즘 보완해야함
 - CLIP vector가 이미 normalized된 건지?
