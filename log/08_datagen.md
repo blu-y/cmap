@@ -79,3 +79,10 @@ cmap
         ├── tf_static.csv
         └── tf.csv
 ``` 
+
+#####
+```bash
+mkdir -p dataset/tb4
+cd dataset
+tar -xvf tb4.tar.xz
+```
