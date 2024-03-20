@@ -26,13 +26,6 @@ map
                     └── oakd_rgb_camera_optical_frame 
 '''
 '''
-/imu sensor_msgs/msg/Imu 3612
-/pose geometry_msgs/msg/PoseWithCovarianceStamped 253
-/map nav_msgs/msg/OccupancyGrid 225
-/tf_static tf2_msgs/msg/TFMessage 4
-/tf tf2_msgs/msg/TFMessage 6460
-'''
-'''
 /odom nav_msgs/msg/Odometry 1765
 /scan sensor_msgs/msg/LaserScan 819
 /imu sensor_msgs/msg/Imu 3612

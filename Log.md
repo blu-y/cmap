@@ -69,13 +69,12 @@
         - Run with CPU (no cuda due to low drive space remained)
         - ~~Run with CUDA~~ *later with SSD equiped*
 - Semi-exp with Jetson TX2 **(suspended)**
-    - Result: **(Done with CPU)**
+    - Result: **(Done with CPU)**  
      5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
 - *separate_session s_x_v >> s_x_c*
 
 #### 2024-03-18~19
 - Preparation for data collecting [🔗](log/08_datagen.md)
-  - **slam toolbox에서 pose estimation할 때 odometry를 사용하는지?**
 - Turtlebot4 패키지 코드 분석
   - turtlebot4_description (URDF)
   - turtlebot4_viz
@@ -89,6 +88,7 @@
   - slam_toolbox
  
 #### TODO
+- slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
 - 오검출 교차검증 필요, 알고리즘 보완해야함
 - CLIP vector가 이미 normalized된 건지?
 - data diet
