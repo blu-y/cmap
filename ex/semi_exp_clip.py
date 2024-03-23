@@ -157,7 +157,7 @@ if __name__ == '__main__':
     df = df.reset_index(drop=True)
     ids = get_ids(df)
 
-    clip = CLIP(overwrite=True)
+    clip = CLIP(model='ViT-B-16', overwrite=True)
     labels = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
     df_s, df_f = clip.encode_rh(rh, df, ids, label_list=labels)
     plot(df_s, label_list = labels)
