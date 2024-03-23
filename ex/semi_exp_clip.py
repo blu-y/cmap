@@ -148,7 +148,7 @@ def plot(df_s, label_list):
     plt.show()
 
 if __name__ == '__main__':
-    rh, df, ids = load_dataset('RGBD_1', scale=None)
+    rh, df, ids = load_dataset('RGBD_1', scale=10)
 
     # for particular session
     dfs = separate_session(df)
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     df = df.reset_index(drop=True)
     ids = get_ids(df)
 
-    clip = CLIP(model='ViT-B-32', overwrite=True)
+    clip = CLIP(overwrite=True)
     labels = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
     df_s, df_f = clip.encode_rh(rh, df, ids, label_list=labels)
     plot(df_s, label_list = labels)

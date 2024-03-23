@@ -70,7 +70,7 @@
         - ~~Run with CUDA~~ *later with SSD equiped*
 - Semi-exp with Jetson TX2 **(suspended)**
     - Result: **(Done with CPU)**  
-     5.62 s / ARM A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
+    5.62 s / Cortex A57 / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)
 - *separate_session s_x_v >> s_x_c*
 
 #### 2024-03-18~19
@@ -80,13 +80,34 @@
   - turtlebot4_viz
 - 'GLIBCXX_3.4.30' not found 오류 [🔗](log/00_debug.md#glibcxx_3430-not-found)
 - ImportError: /lib/libgdal.so.30 오류  [🔗](log/00_debug.md#importerror-liblibgdalso30)
+  
+#### 2024-03-21
+- Bunker
+  - Rosbag으로 explore하기 debug
+    - pub_tf arguments in bunker_control_base.launch was declared 'string' not 'bool'
+    - LeGO-LoAM simulation parameter to true
 
+#### 2024-03-22
+- Jetson Orin Nano Jetpack 6 DP 설치
+ 
+#### 2024-03-23
+- Semi-exp with Jetson Orin Nano
+    - Result:
+    1.06 fps (1067 ms) / Cortex A78AE / CPU Only / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    1.76 fps (567 ms) / Cortex A78AE / CPU Only / ViT-B-32-256(151.29M params, 17.46B FLOPs) 
+    2.51 fps (398 ms)  / Cortex A78AE / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs) 
+    - CUDA unavailable 문제로 CPU Only로 실험, 문제 해결 중.
+- Bunker
+  - tf 문제 해결 후 재실행하여 제어 문제 해결되는지 확인
 
-#### 2024-03-20
+#### 2024-03-24
+- Jetson Nano Pytorch CUDA 문제 해결 후 재실험
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
   - turtlebot4_navigation
   - slam_toolbox
- 
+
+
+
 #### TODO
 - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
 - 오검출 교차검증 필요, 알고리즘 보완해야함
@@ -95,7 +116,5 @@
 - filtering points with multi camera view
 - how to choose keyframe (현재 사용하는 방식 조사, 보완)
 - saving lesser dimension with dimension reduction techniques
-- Other dimension reduction techniques (NMF, SVD, ICA)
 - GUI, search, sort
-
-- github classroom / autograding
+- Other dimension reduction techniques (NMF, SVD, ICA)
