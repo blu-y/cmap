@@ -101,7 +101,7 @@
   - tf 문제 해결 후 재실행하여 제어 문제 해결되는지 확인
 
 #### 2024-03-24
-- Jetson Nano Pytorch CUDA 문제 해결 후 재실험
+- Jetson Nano Pytorch CUDA 문제 해결 중 (torch는 해결하였으나 torchvision 설치 불가로 진행중)
   - [링크](https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/) 에서 맞는 pytorch whl 파일 링크 복사
   - ```bash
     python3 -m pip install --upgrade pip
@@ -115,7 +115,7 @@
     cp /usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib # 6.0.30 will be the latest version
     ln -s /home/$USER/anaconda3/bin/../lib/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 # 6.0.30 will be the latest version
     conda install gxx_linux-aarch64 packaging
-    pip install torchvision=='0.17.0' torchaudio=='2.2.0' --no-deps
+    # pip install torchvision=='0.17.0' torchaudio=='2.2.0' --no-deps # 실패
     ```
     <!-- ```bash
     git clone --branch v0.17.0 https://github.com/pytorch/vision torchvision
@@ -128,8 +128,8 @@
     echo 'export LD_LIBRARY_PATH=/usr/lib/llvm-14/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
     source ~/.bashrc
     ``` -->
-  - docker
-  - ```
+  <!-- - ```
+    # docker
     ls -al /var/run/docker.sock
     sudo /usr/sbin/groupadd -f docker
     sudo /usr/sbin/usermod -aG docker $USER
@@ -137,14 +137,21 @@
     ls -al /var/run/docker.sock
     newgrp docker
     docker pull dustynv/l4t-pytorch:r36.2.0
-    ```
+    ``` -->
+- Bunker
+  - Outdoor exp, Indoor exp 진행
+  - dynamic object가 obstacle로 등록됨(octomap)
+  - segment point pure에서 수신되는 point가 너무 적음(octomap)
+  - 뚫려있는 곳을 바라보면 그 곳은 free space로 등록하지 않아 unexplored 상태임(octomap)
+  - 벽에 가까이 있으면 local path가 소극적이며 이상하게 동작(m-explore)
+
+#### TODO
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
   - turtlebot4_navigation
   - slam_toolbox
 
 
-
-#### TODO
+#### TODO (장기)
 - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
 - 오검출 교차검증 필요, 알고리즘 보완해야함
 - CLIP vector가 이미 normalized된 건지?
