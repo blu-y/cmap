@@ -101,7 +101,7 @@
   - tf 문제 해결 후 재실행하여 제어 문제 해결되는지 확인
 
 #### 2024-03-24
-- Jetson Nano Pytorch CUDA 문제 해결 중 (torch는 해결하였으나 torchvision 설치 불가로 진행중)
+- Jetson Orin Nano Pytorch CUDA 문제 해결 중 (torch는 해결하였으나 torchvision 설치 불가)
   - [링크](https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/) 에서 맞는 pytorch whl 파일 링크 복사
   - ```bash
     python3 -m pip install --upgrade pip
@@ -143,6 +143,10 @@
   - segment point pure에서 수신되는 point가 너무 적음(octomap)
   - 뚫려있는 곳을 바라보면 그 곳은 free space로 등록하지 않아 unexplored 상태임(octomap)
   - 벽에 가까이 있으면 local path가 소극적이며 이상하게 동작(m-explore)
+
+#### 2024-03-25
+- Jetson Orin Nano CUDA Solved, but performance is same with CPU only
+  - Retry with clean installed ubuntu (with no conda)
 
 #### TODO
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
