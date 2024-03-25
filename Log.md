@@ -147,6 +147,7 @@
 #### 2024-03-25
 - Jetson Orin Nano CUDA Solved, but performance is same with CPU only
   - Retry with clean installed ubuntu (with no conda)
+  - if fail >> finally experiment with using docker and terminate
 
 #### TODO
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
