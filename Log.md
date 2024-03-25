@@ -108,19 +108,19 @@
     pip install -r requirements.txt
     sudo apt install libjpeg-dev zlib1g-dev libpython3-dev libopenblas-dev libavcodec-dev libavformat-dev libswscale-dev -y
     export TORCH_INSTALL=https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/torch-2.2.0a0+6a974be.nv23.11-cp310-cp310-linux_aarch64.whl
-    python3 -m pip install pillow numpy=='1.26.1'
+    python3 -m pip install pillow numpy=='1.26.1' onnx
     python3 -m pip install --no-cache $TORCH_INSTALL
-    conda install -c conda-forge gcc=12.1.0
-    rm /home/$USER/anaconda3/bin/../lib/libstdc++.so.6
-    cp /usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib # 6.0.30 will be the latest version
-    ln -s /home/$USER/anaconda3/bin/../lib/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 # 6.0.30 will be the latest version
-    conda install gxx_linux-aarch64 packaging
+    conda install -c conda-forge gcc=12.1.0 ##
+    rm /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 ##
+    cp /usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib # 6.0.30 will be the latest version ##
+    ln -s /home/$USER/anaconda3/bin/../lib/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 # 6.0.30 will be the latest version ##
+    conda install gxx_linux-aarch64 packaging ##
     ```
     ```bash
     git clone --branch v0.17.0 https://github.com/pytorch/vision torchvision
     cd torchvision/
-    export C_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$C_INCLUDE_PATH
-    export CPLUS_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$CPLUS_INCLUDE_PATH
+    export C_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$C_INCLUDE_PATH ##
+    export CPLUS_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$CPLUS_INCLUDE_PATH ##
     export BUILD_VERSION=0.17.0
     python3 setup.py install --user
     sudo -H pip install -U jetson-stats # jtop
