@@ -1,6 +1,0 @@
-robotathome
-opencv-contrib-python==4.5.3.56
-open-clip-torch-any-py3
-matplotlib
-ipython
-transformers

@@ -88,7 +88,7 @@
     - LeGO-LoAM simulation parameter to true
 
 #### 2024-03-22
-- Jetson Orin Nano Jetpack 6 DP 설치
+- Jetson Orin Nano Jetpack 6 DP 설치 [🔗](log/10_jetson.md)
  
 #### 2024-03-23
 - Semi-exp with Jetson Orin Nano
@@ -102,41 +102,6 @@
 
 #### 2024-03-24
 - Jetson Orin Nano Pytorch CUDA 문제 해결 중 (torch는 해결하였으나 torchvision 설치 불가)
-  - [링크](https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/) 에서 맞는 pytorch whl 파일 링크 복사
-  - ```bash
-    python3 -m pip install --upgrade pip
-    pip install -r requirements.txt
-    sudo apt install libjpeg-dev zlib1g-dev libpython3-dev libopenblas-dev libavcodec-dev libavformat-dev libswscale-dev -y
-    export TORCH_INSTALL=https://developer.download.nvidia.com/compute/redist/jp/v60dp/pytorch/torch-2.2.0a0+6a974be.nv23.11-cp310-cp310-linux_aarch64.whl
-    python3 -m pip install pillow numpy=='1.26.1' onnx
-    python3 -m pip install --no-cache $TORCH_INSTALL
-    conda install -c conda-forge gcc=12.1.0 ##
-    rm /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 ##
-    cp /usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib # 6.0.30 will be the latest version ##
-    ln -s /home/$USER/anaconda3/bin/../lib/libstdc++.so.6.0.30 /home/$USER/anaconda3/bin/../lib/libstdc++.so.6 # 6.0.30 will be the latest version ##
-    conda install gxx_linux-aarch64 packaging ##
-    ```
-    ```bash
-    git clone --branch v0.17.0 https://github.com/pytorch/vision torchvision
-    cd torchvision/
-    export C_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$C_INCLUDE_PATH ##
-    export CPLUS_INCLUDE_PATH=/usr/include/aarch64-linux-gnu:/usr/include:$CPLUS_INCLUDE_PATH ##
-    export BUILD_VERSION=0.17.0
-    python3 setup.py install --user
-    sudo -H pip install -U jetson-stats # jtop
-    echo 'export LD_LIBRARY_PATH=/usr/lib/llvm-14/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
-    source ~/.bashrc
-    ```
-  <!-- - ```
-    # docker
-    ls -al /var/run/docker.sock
-    sudo /usr/sbin/groupadd -f docker
-    sudo /usr/sbin/usermod -aG docker $USER
-    sudo chown root:docker /var/run/docker.sock
-    ls -al /var/run/docker.sock
-    newgrp docker
-    docker pull dustynv/l4t-pytorch:r36.2.0
-    ``` -->
 - Bunker
   - Outdoor exp, Indoor exp 진행
   - dynamic object가 obstacle로 등록됨(octomap)
@@ -146,10 +111,15 @@
 
 #### 2024-03-25
 - Jetson Orin Nano CUDA Solved, but performance is same with CPU only
-  - Retry with clean installed ubuntu (with no conda)
-  - if fail >> finally experiment with using docker and terminate
+- Retry with clean installed ubuntu (with no conda) [🔗](log/10_jetson.md#installing-python-packages)
+- Semi-exp with Jetson Orin Nano (CUDA)
+    - Result:
+    0.66 fps (1504 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    2.07 fps (482 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs) 
+    2.56 fps (391 ms)  / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs) 
 
 #### TODO
+- Jetson Orin Nano experiment using docker
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
   - turtlebot4_navigation
   - slam_toolbox
@@ -161,7 +131,7 @@
 - CLIP vector가 이미 normalized된 건지?
 - data diet
 - filtering points with multi camera view
-- how to choose keyframe (현재 사용하는 방식 조사, 보완)
+- how to choose keyframe (현재 사용하는 방식 조사, 보완, 좋은 화질의 frame 필요)
 - saving lesser dimension with dimension reduction techniques
 - GUI, search, sort
 - Other dimension reduction techniques (NMF, SVD, ICA)
