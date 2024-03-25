@@ -132,7 +132,7 @@ class CLIP:
     def similarity(self, image_features, text_features):
         return image_features @ text_features.numpy().T
     
-def plot(df_s, label_list):
+def plot(df_s, label_list, show=True):
     for l in label_list:
         _df= df_s.sort_values(l, ascending=False)
         _df = _df.reset_index(drop=True)
@@ -145,7 +145,8 @@ def plot(df_s, label_list):
             plt.title(round(_df[l][i],3))
             plt.axis('off')
         plt.tight_layout()
-    plt.show()
+    if show:
+        plt.show()
 
 if __name__ == '__main__':
     rh, df, ids = load_dataset('RGBD_1', scale=10)
@@ -157,7 +158,7 @@ if __name__ == '__main__':
     df = df.reset_index(drop=True)
     ids = get_ids(df)
 
-    clip = CLIP(model='ViT-B-32-256', overwrite=True)
+    clip = CLIP(model='ViT-B-16-SigLIP', overwrite=True)
     labels = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
     df_s, df_f = clip.encode_rh(rh, df, ids, label_list=labels)
-    plot(df_s, label_list = labels)
+    plot(df_s, label_list = labels, show=False)
