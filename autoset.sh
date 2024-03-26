@@ -48,7 +48,7 @@ echo "" >> ~/.bashrc
 echo "alias eb='gedit ~/.bashrc'" >> ~/.bashrc
 echo "alias sb='source ~/.bashrc'" >> ~/.bashrc
 echo "alias pull='git pull'" >> ~/.bashrc
-echo "alias push='git add . && today=`date +%m%d` && git commit -m \"\$today\" && unset today && git push origin'" >> ~/.bashrc
+echo "alias push='git add . && today=\`date +%m%d\` && git commit -m \"\$today\" && unset today && git push origin'" >> ~/.bashrc
 echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
 echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
