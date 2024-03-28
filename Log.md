@@ -133,6 +133,7 @@
 #### TODO (장기)
 - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
 - 오검출 교차검증 필요, 알고리즘 보완해야함
+- AI Powered search
 - CLIP vector가 이미 normalized된 건지?
 - data diet
 - filtering points with multi camera view
