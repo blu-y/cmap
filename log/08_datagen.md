@@ -80,7 +80,7 @@ cmap
         └── tf.csv
 ``` 
 
-#####
+##### Use generated data
 ```bash
 mkdir -p dataset/tb4
 cd dataset
