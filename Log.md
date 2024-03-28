@@ -89,7 +89,7 @@
 
 #### 2024-03-22
 - Jetson Orin Nano Jetpack 6 DP 설치 [🔗](log/10_jetson.md)
- 
+
 #### 2024-03-23
 - Semi-exp with Jetson Orin Nano
     - Result:
@@ -119,15 +119,17 @@
     2.56 fps (391 ms)  / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs)  
     - torch.cuda.is_available() = True로 나왔으나 성능이 CPU Only와 똑같음. --> 추후 docker를 사용하여 재시도
 
-#### 2024-03-27
+#### 2024-03-27~28
 - DRL Term Project 1
 
+#### 2024-03-29
+- SLAM Toolbox, Turtlebot4 패키지 코드 분석
+  - turtlebot4_navigation
+    - `ros2 launch turtlebot4_navigation slam.launch.py`
+  - slam_toolbox
 
 #### TODO
 - Jetson Orin Nano experiment using docker
-- SLAM Toolbox, Turtlebot4 패키지 코드 분석
-  - turtlebot4_navigation
-  - slam_toolbox
 
 
 #### TODO (장기)
