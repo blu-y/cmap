@@ -44,7 +44,7 @@
 
 #### 2024-03-07
 - Semi-exp with desktop
-    - Result: 
+    - Result:  
     8.05 fps (124 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
     19.57 fps (51 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
     23.09 fps (43 ms) / i5-13400F / GeForce RTX 3090 / ViT-B-32(151.28M params, 14.78B FLOPs)
@@ -92,7 +92,7 @@
 
 #### 2024-03-23
 - Semi-exp with Jetson Orin Nano
-    - Result:
+    - Result:  
     0.94 fps (1067 ms) / Cortex A78AE / CPU Only / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
     1.76 fps (567 ms) / Cortex A78AE / CPU Only / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
     2.51 fps (398 ms)  / Cortex A78AE / CPU Only / ViT-B-32(151.28M params, 14.78B FLOPs)  
@@ -113,7 +113,7 @@
 - Jetson Orin Nano CUDA Solved, but performance is same with CPU only
 - Retry with clean installed ubuntu (with no conda) [🔗](log/10_jetson.md#installing-python-packages)
 - Semi-exp with Jetson Orin Nano (CUDA)
-    - Result:
+    - Result:  
     0.66 fps (1504 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
     2.07 fps (482 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
     2.56 fps (391 ms)  / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs)  
@@ -122,17 +122,30 @@
 #### 2024-03-27~28
 - DRL Term Project 1
 
-#### 2024-03-29
+#### 2024-03-30
 - SLAM Toolbox, Turtlebot4 패키지 코드 분석
   - turtlebot4_navigation
     - `ros2 launch turtlebot4_navigation slam.launch.py`
   - slam_toolbox
 
-#### TODO
-- Jetson Orin Nano experiment using docker
+#### 2024-03-31~01
+- Bunker
+  - 지난 실험 replay를 통해 ground 정보가 map에 반영되지 않음을 확인  
+  - Octomap에 들어가는 cloud는 이미 LeGO-LOAM에서 바닥이 제거된 cloud.
+  - Octomap에서는 따로 바닥 제거 알고리즘이 존재하며, 여기서 분류된 바닥은 free space를 등록하는 데 사용되나 바닥이 없는 cloud가 들어가면서 바닥이 free space로 등록되지 않음.
+  - 따라서 octomap에서 LeGO-LOAM의 ground_cloud를 subscribe하여 이를 free space로 등록하도록 수정하였음.
+  - IMU를 사용하여 실험해 보았지만, 오히려 더 오차가 커졌음.
+  - Outdoor exp[🔗](https://www.youtube.com/watch?v=9FNuZD3T66I), Indoor exp[🔗](https://www.youtube.com/watch?v=zUZfFqObhPU) 진행
+    - 바닥이 free space로 등록되어 map이 더욱 잘 생성되는 것을 확인. path 또한 잘 생성됨.
+    - LeGO-LOAM에서 Localization이 부정확하여(rolling 발생, z축으로 가라앉거나 떠오름) 바닥의 z값이 달라져, free space로 등록되지 않는 경우때문에 map 제작이 불완전함.
+
+
+#### 2024-04-02
+- 실제 구현을 위한 cmap_node 작성 
 
 
 #### TODO (장기)
+- Jetson Orin Nano experiment using docker
 - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
 - 오검출 교차검증 필요, 알고리즘 보완해야함
 - AI Powered search
