@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import pickle
+import csv
 import torch
 from PIL import Image as PIL
 from datetime import datetime
@@ -19,7 +20,7 @@ from geometry_msgs.msg import PoseWithCovarianceStamped
 from cv_bridge import CvBridge
 
 class PCA:
-    def __init__(self, n=3, profile='./cmap/src/default_pca_profile.pkl'):
+    def __init__(self, n=3, profile='default_pca_profile.pkl'):
         self.n = n
         self.columns = ['pca'+str(i) for i in range(self.n)]
         try:
@@ -29,21 +30,10 @@ class PCA:
             [self.mean, self.std, self.top_evec, self.explained_variance_ratio_] = _profile
         except: print("No profile data, use .fit to fit data")
 
-    def pca_color(self, df_p):
-        rgba = df_p[['pca0', 'pca1', 'pca2']]/40+0.5
-        rgba.columns = ['r','g', 'b']
-        rgba['a'] = 1
-        if rgba.max(axis=None) > 1 or rgba.min(axis=None) < 0:
-            print('rgba max or min overflowed')
-        df = pd.concat([df_p, rgba], axis=1)
-        return df[0], df[1], df[2]
-
-    def import_vector(self, df, fn):
-        with open(fn,"rb") as f:
-            features = pickle.load(f)
-        features = pd.DataFrame(features)
-        df_f = pd.concat([df, features], axis=1)
-        return df_f
+    def pca_color(self, data_pca):
+        rgb = data_pca/30+0.5
+        rgb = np.clip(rgb, 0, 1)
+        return rgb
 
     def fit(self, data, fn=None):
         data_pca = None
@@ -78,25 +68,14 @@ class PCA:
         print('min :', self.data_pca.min(axis=0))
         print('max :', self.data_pca.max(axis=0))
         print('Explained variance ratio:', self.explained_variance_ratio_)
-        
         return pd.concat([data, self.data_pca], axis=1)
-
-    def preprocess(self, df_f):
-        # get vectors from df_f
-        df_out = pd.DataFrame({col: df_f[col] for col in df_f.columns if isinstance(col, int)})
-        return df_out
-
-    def standardize(self, data):
-        data = self.preprocess(data)
-        return (data - self.mean) / self.std
     
     def transform(self, data):
-        data_std = self.standardize(data)
-        self.n_data_pca = np.dot(data_std, self.top_evec)
-        self.n_data_pca = pd.DataFrame(self.n_data_pca, columns=['pca0', 'pca1', 'pca2'])
-        print('min :', self.n_data_pca.min(axis=0))
-        print('max :', self.n_data_pca.max(axis=0))
-        return pd.concat([data, self.n_data_pca], axis=1)
+        mean = np.mean(data)
+        std = np.std(data)
+        data_std = [(x - mean) / std for x in data]
+        data_pca = np.dot(data_std, self.top_evec)
+        return data_pca
 
 class CLIP:
     def __init__(self, model='ViT-B-32'):
@@ -131,8 +110,6 @@ class CLIP:
         return image_features @ text_features.numpy().T
 
 class CMAP(Node) :
-    ### 슬램 노드가 pose를 퍼블리쉬하는데 그걸 받으면 그대로 저장
-    ### 그걸 이제 이미지를 받으면 clip 인코딩하고
     def __init__(self) :
         super().__init__('image_subscriber')
         self.bridge = CvBridge() 
@@ -145,8 +122,12 @@ class CMAP(Node) :
         self.markers = MarkerArray()
         self.image = []
         self.pose = PoseWithCovarianceStamped()
+        self.folder = os.path.join(os.getcwd(), 'cmap')
+        fn = os.path.join(self.folder, 'profiles')
+        if not os.path.exists(fn): os.makedirs(fn)
+        fn = os.path.join(fn, 'default_pca_profile.pkl')
         self.clip = CLIP()
-        # self.pca = PCA()
+        self.pca = PCA(profile=fn)
         self.features = []
         self.k = 0
 
@@ -162,62 +143,79 @@ class CMAP(Node) :
     def keyframe_selection(self, image):
         # Keyframe selection logic required
         self.k += 1
-        if self.k % 20 == 0: return True
+        if self.k % 50 == 0: return True
         return False
     
     def header_to_time(self, header, str=True, to_int=False):
         t = header.stamp.sec + header.stamp.nanosec * 1e-9
         if str: t = datetime.fromtimestamp(t).strftime('%Y%m%d_%H%M%S_%f')
-        if to_int: t = int(t)
+        if to_int:
+            t = int(datetime.fromtimestamp(t).strftime('%M%S%f'))
+            t = int(t)
         return t
     
     def get_rgb(self):
         # PCA reduction required
-        # return self.pca.pca_color(self.pca.transform(self.image))
-        return 1.0, 0.0, 0.0
+        f = self.features[-1][8:]
+        return self.pca.pca_color(self.pca.transform(f))
 
-    def create_marker(self, header):
+    def create_marker(self):
         marker = Marker()
         marker.header.frame_id = "map"
         marker.type = marker.ARROW
         marker.action = marker.ADD
-        marker.id = self.header_to_time(header, str=False, to_int=True)
+        marker.id = self.header_to_time(self.header, str=False, to_int=True)
         marker.pose = self.pose.pose.pose
-        marker.scale.x = 0.1
-        marker.scale.y = 0.2
+        marker.scale.x = 0.3
+        marker.scale.y = 0.03
         marker.scale.z = 0.01
-        marker.color.r, marker.color.g, marker.color.b = self.get_rgb()
+        [marker.color.r, marker.color.g, marker.color.b] = self.get_rgb()
         marker.color.a = 1.0
         self.markers.markers.append(marker)
         self.cmap_pub.publish(self.markers)
 
-    def cmap(self, header):
+    def cmap(self):
         if self.keyframe_selection(self.image):
-            t = self.header_to_time(header, str=False)
+            t = self.header_to_time(self.header, str=False)
             p, o = self.get_pose()
             f = self.encode_image(PIL.fromarray(self.image))
             self.features.append([t] + p + o + f)
-            self.create_marker(header)
+            self.create_marker()
 
     def get_pose(self):
         p = self.pose.pose.pose.position
         o = self.pose.pose.pose.orientation
         return [p.x, p.y, p.z], [o.x, o.y, o.z, o.w]
 
-    def image_cb(self, msg) :
+    def save_features(self):
+        folder = os.path.join(self.folder, 'results')
+        if not os.path.exists(folder): os.makedirs(folder)
+        fn = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '_features.csv'
+        fn = os.path.join(folder, fn)
+        with open(fn, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['time', 'px', 'py', 'pz', 'ox', 'oy', 'oz', 'ow'] + ['f'+str(i) for i in range(self.clip.dim)])
+            for row in self.features:
+                writer.writerow(row)
+        self.get_logger().info('Feature Saved ' + fn)
+
+    def image_cb(self, msg):
         self.image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
-        self.cmap(msg.header)
+        self.header = msg.header
+        self.cmap()
         cv2.imshow('img', self.image)
         key = cv2.waitKey(1)
         if key == 13:
-            filename = self.header_to_time(msg.header) + ".png"
-            filename = os.path.join(os.getcwd(), 'cmap', 'images', filename)
-            cv2.imwrite(filename, self.image)
-            print('Image Saved')
+            # filename = self.header_to_time(msg.header) + ".png"
+            # filename = os.path.join(self.folder, filename)
+            # cv2.imwrite(filename, self.image)
+            self.save_features()
 
 def main(args=None) :
   rclpy.init(args=args)
   node = CMAP()
+  node.get_logger().info('CMAP Node Running')
+  node.get_logger().info('Press Enter to save features')
   rclpy.spin(node)
   node.destroy_node()
   rclpy.shutdown()

@@ -91,7 +91,7 @@ if __name__ == '__main__':
     ### from scratch
     # Load data & CLIP
     rh, df, ids = load_dataset('RGBD_1', scale=None)
-    clip = CLIP(model='ViT-B-32', overwrite=False)
+    clip = CLIP(model='ViT-B-32', overwrite=True, fn='full')
     df_s, df_f = clip.encode_rh(rh, df, ids)
     # PCA
     pca = PCA()
