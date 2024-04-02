@@ -144,9 +144,13 @@
 - cmap_node 작성 [🔗](log/11_cmap_node.md)
   - embed previous works (CLIP, VIZ, PCA)
   
-#### 2024-04-03
+#### 2024-04-03~04
 - cmap_node 작성 [🔗](log/11_cmap_node.md)
   - Keyframe selection
+  
+#### 2024-04-05
+- cmap_node 작성 [🔗](log/11_cmap_node.md)
+  - 패키지화
 
 
 #### TODO (장기)
