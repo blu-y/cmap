@@ -135,13 +135,18 @@
   - Octomap에서는 따로 바닥 제거 알고리즘이 존재하며, 여기서 분류된 바닥은 free space를 등록하는 데 사용되나 바닥이 없는 cloud가 들어가면서 바닥이 free space로 등록되지 않음.
   - 따라서 octomap에서 LeGO-LOAM의 ground_cloud를 subscribe하여 이를 free space로 등록하도록 수정하였음.
   - IMU를 사용하여 실험해 보았지만, 오히려 더 오차가 커졌음.
-  - Outdoor exp[🔗](https://www.youtube.com/watch?v=9FNuZD3T66I), Indoor exp[🔗](https://www.youtube.com/watch?v=zUZfFqObhPU) 진행
+  - Indoor exp[🔗](https://www.youtube.com/watch?v=zUZfFqObhPU), Outdoor exp[🔗](https://www.youtube.com/watch?v=9FNuZD3T66I) 진행
     - 바닥이 free space로 등록되어 map이 더욱 잘 생성되는 것을 확인. path 또한 잘 생성됨.
     - LeGO-LOAM에서 Localization이 부정확하여(rolling 발생, z축으로 가라앉거나 떠오름) 바닥의 z값이 달라져, free space로 등록되지 않는 경우때문에 map 제작이 불완전함.
 
 
 #### 2024-04-02
-- 실제 구현을 위한 cmap_node 작성 
+- cmap_node 작성 [🔗](log/11_cmap_node.md)
+  - embed previous works (CLIP, VIZ, PCA)
+  
+#### 2024-04-03
+- cmap_node 작성 [🔗](log/11_cmap_node.md)
+  - Keyframe selection
 
 
 #### TODO (장기)
