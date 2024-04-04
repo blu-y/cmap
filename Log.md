@@ -141,15 +141,20 @@
 
 
 #### 2024-04-02
-- cmap_node 작성 [🔗](log/11_cmap_node.md)
-  - embed previous works (CLIP, VIZ, PCA)
+- CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
+  - cmap node 작성
+    - embed previous works (CLIP, VIZ, PCA)
+  - 작성된 부분 실험
   
 #### 2024-04-03~04
-- cmap_node 작성 [🔗](log/11_cmap_node.md)
-  - Keyframe selection
+- CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
+  - Goal point publisher node 작성
+  - cmap node goal point calculation 부분 작성
+  - 작성된 부분 실험
   
-#### 2024-04-05
-- cmap_node 작성 [🔗](log/11_cmap_node.md)
+#### 2024-04-05~06
+- CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
+  - Keyframe selection
   - 패키지화
 
 

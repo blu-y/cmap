@@ -14,9 +14,10 @@ import cv2
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
+from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from visualization_msgs.msg import Marker, MarkerArray
-from geometry_msgs.msg import PoseWithCovarianceStamped
+from geometry_msgs.msg import PoseWithCovarianceStamped, PoseStamped
 from cv_bridge import CvBridge
 
 class PCA:
@@ -111,14 +112,18 @@ class CLIP:
 
 class CMAP(Node) :
     def __init__(self) :
-        super().__init__('image_subscriber')
+        super().__init__('cmap_node')
         self.bridge = CvBridge() 
         self.image_sub = self.create_subscription(
             Image, '/oakd/rgb/preview/image_raw', self.image_cb, qos_profile_sensor_data)
         self.pose_sub = self.create_subscription(
             PoseWithCovarianceStamped, '/pose', self.pose_cb, 1)
         self.cmap_pub = self.create_publisher(
-            MarkerArray, '/cmap_marker', 10)
+            MarkerArray, '/cmap/marker', 10)
+        self.cmap_goal_sub = self.create_subscription(
+            String, '/cmap/goal', self.goal_cb, 1)
+        self.goal_pub = self.create_publisher(
+            PoseStamped, '/goal_pose', 1)
         self.markers = MarkerArray()
         self.image = []
         self.pose = PoseWithCovarianceStamped()
@@ -130,6 +135,19 @@ class CMAP(Node) :
         self.pca = PCA(profile=fn)
         self.features = []
         self.k = 0
+
+    def goal_cb(self, msg):
+        self.get_logger().info('Goal: ' + msg.data)
+        text = msg.data
+        text_encodings = self.encode_text(text)
+        image_encodings = np.array(self.features)[:, 8:]
+        idx = np.argmax(self.clip.similarity(image_encodings, text_encodings))
+        goal = PoseStamped()
+        goal.header.frame_id = "map"
+        goal.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.position.x, goal.pose.position.y, goal.pose.position.z = self.features[idx][1:4]
+        goal.pose.orientation.x, goal.pose.orientation.y, goal.pose.orientation.z, goal.pose.orientation.w = self.features[idx][4:8]
+        self.goal_pub.publish(goal)
 
     def encode_image(self, image):
         return self.clip.encode_image(image)
@@ -146,12 +164,13 @@ class CMAP(Node) :
         if self.k % 50 == 0: return True
         return False
     
-    def header_to_time(self, header, str=True, to_int=False):
+    def header_to_time(self, header, to_str=True, to_int=False):
         t = header.stamp.sec + header.stamp.nanosec * 1e-9
-        if str: t = datetime.fromtimestamp(t).strftime('%Y%m%d_%H%M%S_%f')
+        if to_str: t = datetime.fromtimestamp(t).strftime('%Y%m%d_%H%M%S_%f')
         if to_int:
-            t = int(datetime.fromtimestamp(t).strftime('%M%S%f'))
+            t = int(datetime.fromtimestamp(t).strftime('%M%S%f'))/100
             t = int(t)
+            self.get_logger().info('ID: ' + str(t))
         return t
     
     def get_rgb(self):
@@ -164,7 +183,7 @@ class CMAP(Node) :
         marker.header.frame_id = "map"
         marker.type = marker.ARROW
         marker.action = marker.ADD
-        marker.id = self.header_to_time(self.header, str=False, to_int=True)
+        marker.id = self.header_to_time(self.header, to_str=False, to_int=True)
         marker.pose = self.pose.pose.pose
         marker.scale.x = 0.3
         marker.scale.y = 0.03
@@ -176,7 +195,7 @@ class CMAP(Node) :
 
     def cmap(self):
         if self.keyframe_selection(self.image):
-            t = self.header_to_time(self.header, str=False)
+            t = self.header_to_time(self.header, to_str=False)
             p, o = self.get_pose()
             f = self.encode_image(PIL.fromarray(self.image))
             self.features.append([t] + p + o + f)
