@@ -167,6 +167,7 @@
   - Feature update
   - Exploration
   - Camera 높이 올리기, more cameras, 화각
+  - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
 
 
 #### TODO (장기)
