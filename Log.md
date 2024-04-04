@@ -152,10 +152,15 @@
   - cmap node goal point calculation 부분 작성
   - 작성된 부분 실험
   
-#### 2024-04-05~06
+#### 2024-04-05
 - CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
-  - Keyframe selection
   - 패키지화
+
+#### TODO
+  - Keyframe selection
+  - Feature update
+  - Exploration
+  - Camera 높이 올리기, more cameras, 화각
 
 
 #### TODO (장기)

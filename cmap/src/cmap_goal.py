@@ -20,6 +20,7 @@ class SimplePublisher(Node):
         msg = String()
         msg.data = input_str
         self.publisher_.publish(msg)
+        
         self.get_logger().info('Publishing: "%s"' % msg.data)
 
 def main(args=None):
