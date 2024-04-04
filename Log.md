@@ -151,6 +151,10 @@
   - Goal point publisher node 작성
   - cmap node goal point calculation 부분 작성
   - 작성된 부분 실험
+    - Result:  
+    - 초기에 찍은 사진은 잘 되는 경향이 있으나, 점점 frame이 쌓여갈수록 정확도가 떨어지는 듯함  
+    - 다시 본 frame을 업데이트 하는 알고리즘이 필요함  
+    - SLAM의 loop closure 같이 정확도를 향상시키는 알고리즘이 필요함
   
 #### 2024-04-05
 - CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
