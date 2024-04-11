@@ -117,7 +117,7 @@ class CMAP(Node) :
         self.image_sub = self.create_subscription(
             Image, '/oakd/rgb/preview/image_raw', self.image_cb, qos_profile_sensor_data)
         self.pose_sub = self.create_subscription(
-            PoseWithCovarianceStamped, '/pose', self.pose_cb, 1)
+            PoseWithCovarianceStamped, '/pose', self.pose_cb, qos_profile_sensor_data)
         self.cmap_pub = self.create_publisher(
             MarkerArray, '/cmap/marker', 10)
         self.cmap_goal_sub = self.create_subscription(
@@ -161,7 +161,7 @@ class CMAP(Node) :
     def keyframe_selection(self, image):
         # Keyframe selection logic required
         self.k += 1
-        if self.k % 50 == 0: return True
+        if self.k % 30 == 0: return True
         return False
     
     def header_to_time(self, header, to_str=True, to_int=False):
@@ -218,12 +218,20 @@ class CMAP(Node) :
                 writer.writerow(row)
         self.get_logger().info('Feature Saved ' + fn)
 
+    def saveimage(self):
+        folder = os.path.join(self.folder, 'images', 'rgb')
+        if not os.path.exists(folder): os.makedirs(folder)
+        fn = str(self.header.stamp.sec + self.header.stamp.nanosec * 1e-9)  + ".png"
+        fn = os.path.join(folder, fn)
+        cv2.imwrite(fn, self.image)
+
     def image_cb(self, msg):
         self.image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
         self.header = msg.header
         self.cmap()
+        # self.saveimage()
         cv2.imshow('img', self.image)
-        key = cv2.waitKey(1)
+        key = cv2.waitKey(1)    
         if key == 13:
             # filename = self.header_to_time(msg.header) + ".png"
             # filename = os.path.join(self.folder, filename)
