@@ -150,23 +150,32 @@
 - CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
   - Goal point publisher node 작성
   - cmap node goal point calculation 부분 작성
-  - 작성된 부분 실험
+
+#### 2024-04-05~06
+- CMAP 패키지 실험 [🔗](log/11_cmap_node.md)
     - Result:  
     - 초기에 찍은 사진은 잘 되는 경향이 있으나, 점점 frame이 쌓여갈수록 정확도가 떨어지는 듯함  
     - 다시 본 frame을 업데이트 하는 알고리즘이 필요함  
     - SLAM의 loop closure 같이 정확도를 향상시키는 알고리즘이 필요함
     - Good working case [🔗](https://www.youtube.com/watch?v=xkdtDuR6BVM)
     - Bad working case [🔗](https://www.youtube.com/watch?v=ydCWAEa_9SU)
+      - Bad working case에서 pose부분이 뒤늦게 따라오는 것을 확인
+      - 과거의 pose를 optimization하는 과정에서 과거가 아닌 현재시간으로 db를 제작하는 듯
+      - pose토픽이 아니라 tf를 이용하여 실시간 처리로 개선할 필요 있음
   
-#### 2024-04-05
-- CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
-  - 패키지화
+#### 2024-04-09~10
+- Bunker
+  - Explore 패키지 수정 (max distance, heading angle)
+
+
+#### 2024-04-19~
+- CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
 #### TODO
   - Keyframe selection
   - Feature update
   - Exploration
-  - Camera 높이 올리기, more cameras, 화각
+  - Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
 
 
