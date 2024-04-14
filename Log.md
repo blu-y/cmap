@@ -170,15 +170,28 @@
     - 너무 가까우면 로봇 몸체에 막혀서 인식 X
     - 너무 멀면 채널 사이 공간에 연석이 들어가 인식 X
 
+#### 2024-04-11~13
+- Bunker
+  - Explore 패키지 수정 (exploration percentage 측정 알고리즘)
+    - costmap 업데이트 과정에서 오류가 있음, memcpy 또는 mutex를 사용해야 할 듯
+ 
+- CMAP 논문 작성
+
+#### 2024-04-14~16
+- CMAP 논문 작성, 제출
+
+#### 2024-04-17~21
+- CMAP 논문 수정, 제출
 
 #### 2024-04-19~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
 #### TODO
-  - Keyframe selection
+  - Keyframe selection  (로봇이 천천히 움직이면 중복되는 프레임이 너무 많아져서 데이터가 너무 커진다 / viewpoint에 따라 keyframe인지 확인해야함)
+  - Point에 image embedding mapping
   - Feature update
   - Exploration
-  - Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
+  - HW 보완 Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
 
 
