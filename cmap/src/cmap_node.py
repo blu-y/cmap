@@ -15,16 +15,16 @@ from utils import PCA, CLIP
 import os
 import csv
 
-class CMAP(Node) :
-    def __init__(self) :
+class CMAP(Node):
+    def __init__(self, profile='default_pca_profile.pkl'):
         super().__init__('cmap_node')
         self.bridge = CvBridge() 
         self.image_sub = self.create_subscription(
             Image, '/oakd/rgb/preview/image_raw', self.image_cb, qos_profile_sensor_data)
         self.pose_sub = self.create_subscription(
-            PoseWithCovarianceStamped, '/pose', self.pose_cb, qos_profile_sensor_data)
+            PoseWithCovarianceStamped, '/pose', self.pose_cb, 1)
         self.cmap_pub = self.create_publisher(
-            MarkerArray, '/cmap/marker', 10)
+            MarkerArray, '/cmap/markers', 10)
         self.cmap_goal_sub = self.create_subscription(
             String, '/cmap/goal', self.goal_cb, 1)
         self.goal_pub = self.create_publisher(
@@ -35,18 +35,20 @@ class CMAP(Node) :
         self.folder = os.path.join(os.getcwd(), 'cmap')
         fn = os.path.join(self.folder, 'profiles')
         if not os.path.exists(fn): os.makedirs(fn)
-        fn = os.path.join(fn, 'default_pca_profile.pkl')
+        if type(profile) == str: 
+            profile = os.path.join(fn, profile)
+        self.pca = PCA(profile=profile)
         self.clip = CLIP()
-        self.pca = PCA(profile=fn)
         self.features = []
         self.k = 0
 
     def goal_cb(self, msg):
-        self.get_logger().info('Goal: ' + msg.data)
         text = msg.data
         text_encodings = self.encode_text(text)
         image_encodings = np.array(self.features)[:, 8:]
         idx = np.argmax(self.clip.similarity(image_encodings, text_encodings))
+        t = int(datetime.fromtimestamp(self.features[idx][0]).strftime('%M%S%f'))/100
+        self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(int(t)))
         goal = PoseStamped()
         goal.header.frame_id = "map"
         goal.header.stamp = self.get_clock().now().to_msg()
@@ -66,7 +68,7 @@ class CMAP(Node) :
     def keyframe_selection(self, image):
         # Keyframe selection logic required
         self.k += 1
-        if self.k % 30 == 0: return True
+        if self.k % 60 == 0: return True
         return False
     
     def header_to_time(self, header, to_str=True, to_int=False):
@@ -77,11 +79,11 @@ class CMAP(Node) :
             t = int(t)
             self.get_logger().info('ID: ' + str(t))
         return t
-    
+
     def get_rgb(self):
         # PCA reduction required
         f = self.features[-1][8:]
-        return self.pca.pca_color(self.pca.transform(f))
+        return self.pca.pca_color(f)
 
     def create_marker(self):
         marker = Marker()
@@ -123,7 +125,7 @@ class CMAP(Node) :
                 writer.writerow(row)
         self.get_logger().info('Feature Saved ' + fn)
 
-    def saveimage(self):
+    def save_image(self):
         folder = os.path.join(self.folder, 'images', 'rgb')
         if not os.path.exists(folder): os.makedirs(folder)
         fn = str(self.header.stamp.sec + self.header.stamp.nanosec * 1e-9)  + ".png"
@@ -134,7 +136,7 @@ class CMAP(Node) :
         self.image = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
         self.header = msg.header
         self.cmap()
-        # self.saveimage()
+        # self.save_image()
         cv2.imshow('img', self.image)
         key = cv2.waitKey(1)    
         if key == 13:
@@ -144,13 +146,15 @@ class CMAP(Node) :
             self.save_features()
 
 def main(args=None) :
-  rclpy.init(args=args)
-  node = CMAP()
-  node.get_logger().info('CMAP Node Running')
-  node.get_logger().info('Press Enter to save features')
-  rclpy.spin(node)
-  node.destroy_node()
-  rclpy.shutdown()
+    rclpy.init(args=args)
+    # profile = '2024-04-15_20-42-04_features_pca_profile.pkl'
+    # profile = ['livingroom', 'kitchen', 'bathroom']
+    node = CMAP(profile='default_pca_profile.pkl')
+    node.get_logger().info('CMAP Node Running')
+    node.get_logger().info('Press Enter to save features')
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == '__main__' :
   main()
