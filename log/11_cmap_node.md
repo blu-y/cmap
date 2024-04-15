@@ -1,13 +1,13 @@
 ## Cmap Node
 #### from Turtlebot
 ```
-ros2 launch turtlebot4_navigation slam.launch.py
-```
-```
 ros2 launch ~/cmap/cmap/launch/run.launch.py
 ```
 ```
 python ./cmap/src/cmap_node.py 
+```
+```
+python ./cmap/src/cmap_goal.py
 ```
 
 #### from bag
@@ -20,6 +20,10 @@ ros2 launch ~/cmap/cmap/launch/run.launch.py
 ```
 python ./cmap/src/cmap_node.py 
 ```
+```
+python ./cmap/src/cmap_goal.py
+```
+
 
 #### Result
 ![result1](../image/cmap_node_1.png) 

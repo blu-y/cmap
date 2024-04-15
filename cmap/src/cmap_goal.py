@@ -4,7 +4,7 @@ from std_msgs.msg import String
 import sys
 import threading
 
-class SimplePublisher(Node):
+class GoalPublisher(Node):
     def __init__(self):
         super().__init__('cmap_goal_publisher')
         self.publisher_ = self.create_publisher(String, '/cmap/goal', 1)
@@ -25,9 +25,9 @@ class SimplePublisher(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    simple_publisher = SimplePublisher()
+    goal_publisher = GoalPublisher()
     try:
-        rclpy.spin(simple_publisher)
+        rclpy.spin(goal_publisher)
     except KeyboardInterrupt:
         pass
     finally:
