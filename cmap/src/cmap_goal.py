@@ -31,7 +31,7 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        simple_publisher.destroy_node()
+        goal_publisher.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':
