@@ -173,12 +173,24 @@
 #### 2024-04-11~13
 - Bunker
   - Explore 패키지 수정 (exploration percentage 측정 알고리즘)
-    - costmap 업데이트 과정에서 오류가 있음, memcpy 또는 mutex를 사용해야 할 듯
- 
+    - costmap 업데이트 과정에서 오류가 있음, copy 또는 mutex를 사용해야 할 듯
+- CMAP 패키지 작성 [🔗](log/11_cmap_node.md)
+- CMAP 실험
+  - place, object, ambiguous로 나누어 실험.
+    - place: 
+    - object: 
+    - ambiguous: 
 - CMAP 논문 작성
 
-#### 2024-04-14~16
+#### 2024-04-14
+- CMAP 논문 작성
+  
+#### 2024-04-15
+- Bunker
+  - map topic을 내부에 저장하여 exploration rate 계산
+  - 시뮬레이션 결과 오류가 발생하지 않음. rate가 조금씩 꾸준히 증가.
 - CMAP 논문 작성, 제출
+
 
 #### 2024-04-17~21
 - CMAP 논문 수정, 제출

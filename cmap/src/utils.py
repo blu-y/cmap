@@ -5,58 +5,82 @@ import pickle
 from datetime import datetime
 import torch
 from open_clip import create_model_from_pretrained, get_tokenizer
+import csv
 
 class PCA:
-    def __init__(self, n=3, profile='default_pca_profile.pkl'):
+    def __init__(self, n=3, profile='default_pca_profile.pkl', model='ViT-B-32'):
         self.n = n
         self.columns = ['pca'+str(i) for i in range(self.n)]
+        self.profile_ = []
+        if type(profile) == str: self.load_profile(profile)
+        elif type(profile) == list: self.profile_text(profile, model)
+
+    def load_profile(self, profile):
         try:
             with open(profile, "rb") as f:
                 _profile = pickle.load(f)
             # [self.mean, self.std, self.top_evec] = _profile
-            [self.mean, self.std, self.top_evec, self.explained_variance_ratio_] = _profile
+            [self.mean, self.std, self.top_evec, self.evr_] = _profile
         except: print("No profile data, use .fit to fit data")
+    
+    def profile_text(self, profile, model):
+        self.clip = CLIP(model=model)
+        for p in profile:
+            self.profile_.append(self.clip.encode_text([p]))
 
-    def pca_color(self, data_pca):
-        rgb = data_pca/30+0.5
+    def pca_color(self, data):
+        if len(self.profile_) > 0:
+            r = self.clip.similarity(data, self.profile_[0])[0]
+            g = self.clip.similarity(data, self.profile_[1])[0]
+            b = self.clip.similarity(data, self.profile_[2])[0]
+            rgb = [r, g, b]
+            print(rgb)
+        else: 
+            data_pca = self.transform(data)
+            rgb = data_pca/15+0.5
         rgb = np.clip(rgb, 0, 1)
         return rgb
 
-    def fit(self, data, fn=None):
-        data_pca = None
-        vec = self.preprocess(data)
-        vec = vec.to_numpy()
+    def fit(self, fn):
+        with open(fn, 'r') as file:
+            reader = csv.reader(file)
+            data_list = list(reader)
+        data_list.pop(0)
+        data = np.array(data_list).astype(float)
+        vec = data[:,8:]
         self.mean = np.mean(vec, axis=0)
         self.std = np.std(vec, axis=0)
         vec_std = (vec - self.mean) / self.std
         self.cov = np.cov(vec_std, rowvar=False)
         self.eival, self.eivec = np.linalg.eig(self.cov)
+        self.eival = np.real(self.eival)
+        self.eivec = np.real(self.eivec)
         self.ind = np.argsort(self.eival)[::-1]
         sorted_eigenvectors = self.eivec[:, self.ind]
         self.top_evec = sorted_eigenvectors[:, :self.n]
         self.data_pca = np.dot(vec_std, self.top_evec)
         # Calculate explained variance ratio
         total_variance = sum(self.eival)
-        self.explained_variance_ratio_ = [eigval / total_variance for eigval in self.eival[self.ind][:self.n]]
-        
-        if fn is None:
-            if not os.path.exists('./result'): os.makedirs('./result')
-            t = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            fn='./result/pca_profile_'+str(t)+'.pkl'
-            with open(fn,"wb") as f:
-                pickle.dump([self.mean, self.std, self.top_evec, self.explained_variance_ratio_], f)
-                # pickle.dump([self.mean, self.std, self.top_evec], f)
-            print('Profile saved at :', fn)
-        else: 
-            with open(fn,"wb") as f:
-                pickle.dump([self.mean, self.std, self.top_evec, self.explained_variance_ratio_], f)
-                # pickle.dump([self.mean, self.std, self.top_evec], f)
+        self.evr_ = [eigval / total_variance for eigval in self.eival[self.ind][:self.n]]
+        profile = [self.mean, self.std, self.top_evec, self.evr_]
+        print('min :', np.min(self.data_pca, axis=0))
+        print('max :', np.max(self.data_pca, axis=0))
+        print('Explained variance ratio: %.3f, %.3f, %.3f'
+              %(self.evr_[0], self.evr_[1], self.evr_[2]))
+        print('Total: %.3f' %np.sum(self.evr_))
+        fn = os.path.split(fn)[-1]
+        out_fn = './cmap/profiles/' + fn[:-4]+'_pca_profile.pkl'
+        with open(out_fn,"wb") as f:
+            pickle.dump(profile, f)
+            print('Profile saved at :', out_fn)
         self.data_pca = pd.DataFrame(self.data_pca, columns=self.columns)
-        print('min :', self.data_pca.min(axis=0))
-        print('max :', self.data_pca.max(axis=0))
-        print('Explained variance ratio:', self.explained_variance_ratio_)
-        return pd.concat([data, self.data_pca], axis=1)
-    
+        return profile
+
+    def preprocess(self, array):
+        # get vectors from df_f
+        array_out = array
+        return array_out
+
     def transform(self, data):
         mean = np.mean(data)
         std = np.std(data)
