@@ -49,6 +49,12 @@ class CMAP(Node):
         idx = np.argmax(self.clip.similarity(image_encodings, text_encodings))
         t = int(datetime.fromtimestamp(self.features[idx][0]).strftime('%M%S%f'))/100
         self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(int(t)))
+        ### debug ###
+        self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(self.features[idx][0]))
+        fn = os.path.join('/home/iram/images', 'rgb_04082250', str(self.features[idx][0]) + '.png')
+        im = cv2.imread(fn)
+        cv2.imwrite('/home/iram/images/exp0/'+text+'.png', im)
+        ### debug ###
         goal = PoseStamped()
         goal.header.frame_id = "map"
         goal.header.stamp = self.get_clock().now().to_msg()
@@ -68,7 +74,7 @@ class CMAP(Node):
     def keyframe_selection(self, image):
         # Keyframe selection logic required
         self.k += 1
-        if self.k % 60 == 0: return True
+        if self.k % 30 == 0: return True
         return False
     
     def header_to_time(self, header, to_str=True, to_int=False):
