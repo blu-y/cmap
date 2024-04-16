@@ -1,0 +1,48 @@
+	            living room
+                bedroom
+                bathroom
+                restroom
+                dining room
+                kitchen
+                kitchen island  
+living room:    armchair
+                bamboo
+                plant
+                flower pot
+                TV
+                couch
+                sofa
+                coffee table
+                laptop
+                sliding door
+                tv stand
+                television
+                sitting stable
+                stand lamp
+bedroom:        bed
+                rug
+                picture frame
+                lamp
+bathroom:       showerbooth
+                toilet
+dining room:    fridge
+                refrigerator
+                dining chair
+                dining table
+                flower
+                mirror
+kitchen:        bar chair
+                stool
+general:        table
+                chair
+                door
+                power socket
+ambiguous :     a bag is on the chair
+                a cozy place
+                a person is sitting down
+                a place to eat food
+                a place to lie down
+                a place to sleep
+                a place to take a nap
+                a place to take a shower
+                
