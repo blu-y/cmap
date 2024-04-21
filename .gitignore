@@ -7,3 +7,4 @@ ViT-B-32/open_clip_pytorch_model.bin
 .vscode/
 cmap/images/*.tar.xz
 cmap/results/*full.csv
+cmap/results/exp/
