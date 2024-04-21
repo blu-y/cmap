@@ -17,6 +17,9 @@ class ImagePublisher(Node):
         self.bridge = CvBridge()
         self.image_list = [float(fn[:-4]) for fn in os.listdir(src)]
         self.image_list.sort()
+        while True:
+            if self.image_list.pop(0) > 1712583716.302010542:
+                break
         self.get_logger().info('Image list sorted')
         self.publisher_ = self.create_publisher(Image, '/oakd/rgb/preview/image_raw', 100)
         self.clock_subscriber_ = self.create_subscription(Clock, 'clock', self.clock_callback, qos_profile_sensor_data)
@@ -29,11 +32,11 @@ class ImagePublisher(Node):
         msg.header.frame_id = 'oakd_rgb_camera_optical_frame'
         self.publisher_.publish(msg)
         self.get_logger().info('Published image with timestamp: {}'.format(msg.header.stamp))
-        
 
     def clock_callback(self, msg):
         time = msg.clock.sec + msg.clock.nanosec * 1e-9
-        if time >= self.image_list[0]:
+        # if time >= self.image_list[0]:
+        if time >= self.image_list[0] and self.image_list[0] < 1712584051.3194537:
             fn = self.image_list.pop(0)
             self.publish_image(fn)
 
