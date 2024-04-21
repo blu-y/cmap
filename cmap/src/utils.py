@@ -6,6 +6,110 @@ from datetime import datetime
 import torch
 from open_clip import create_model_from_pretrained, get_tokenizer
 import csv
+import cv2
+from geometry_msgs.msg import Pose, PoseWithCovarianceStamped
+from nav_msgs.msg import OccupancyGrid
+from tf_transformations import euler_from_quaternion
+
+class KFS:
+    def __init__(self, radius, resolution, angle, n=0.5, d=2):
+        self.make_default_mask(radius, resolution, angle)
+        self.make_weight_matrix(n, d)
+
+    def make_weight_matrix(self, n, d):
+        # Create a coordinate grid
+        m = n/d
+        k = n-n*np.log(d)
+        Y, X = np.ogrid[:self.size*2, :self.size*2]
+        # Compute the distance squared from the origin
+        distance_squared = (X - self.size)**2 + (Y - self.size*2)**2
+        distance = np.sqrt(distance_squared)
+        # Calculate weights based on the distance
+        weights = (self.resolution * distance)**n * np.exp(-m * self.resolution * distance + k)
+        self.weights = weights
+
+    def weighted_sum(self, 
+                     pose1:PoseWithCovarianceStamped, 
+                     pose2:PoseWithCovarianceStamped,
+                     map1:OccupancyGrid, 
+                     map2:OccupancyGrid):
+        pose1 = pose1.pose.pose
+        pose2 = pose2.pose.pose
+        rpy1 = euler_from_quaternion([pose1.orientation.x, 
+                                      pose1.orientation.y, 
+                                      pose1.orientation.z, 
+                                      pose1.orientation.w])
+        rpy2 = euler_from_quaternion([pose2.orientation.x, 
+                                      pose2.orientation.y, 
+                                      pose2.orientation.z, 
+                                      pose2.orientation.w])
+        diff = ((pose2.position.x - pose1.position.x)/self.resolution, 
+                (pose2.position.y - pose1.position.y)/self.resolution)
+        mask1, mask3 = self.get_intersection(diff, rpy1[2], rpy2[2])
+        # cv2.imshow('mask', mask1*255)
+        # cv2.waitKey(1)
+        # cv2.imshow('mask_inter', mask3*255)
+        # cv2.waitKey(1)
+        w1 = self.weights[self.mask_r:self.mask_r*3, 
+                          self.mask_r:self.mask_r*3]
+        w3 = self.weights[self.mask_r-round(diff[0]):self.mask_r*3-round(diff[1]), 
+                          self.mask_r-round(diff[0]):self.mask_r*3-round(diff[1])]
+        ## add map data
+        map = np.array(map1.data).reshape(map1.info.height, map1.info.width)
+        map = np.pad(map, self.mask_r, 'constant', constant_values=0)
+        x = int((pose1.position.x - map1.info.origin.position.x) / map1.info.resolution)
+        y = int((pose1.position.y - map1.info.origin.position.y) / map1.info.resolution)
+        # print(map.shape)
+        # print(y, x, y+self.mask_r, x+self.mask_r)
+        map = map[y:y+2*self.mask_r, x:x+2*self.mask_r]
+        # map = np.flip(map, 0)
+        # cv2.imshow('localmap', map)
+        # cv2.waitKey(1)
+        map[map != -1] = 1
+        map[map == -1] = 0
+        if w3.shape != mask3.shape: 
+            w3 = np.zeros(mask3.shape)
+        return np.sum(mask1*w1*map)-np.sum(mask3*w3*map)
+
+    def make_default_mask(self, radius, resolution, angle):
+        self.radius = radius
+        self.resolution = resolution
+        self.angle = angle
+        self.mask_r= int(self.radius / self.resolution)
+        self.size = self.mask_r * 2
+        self.center = (self.mask_r, self.mask_r)
+        self.mask = self.circular_sector_mask()
+                                         
+    def circular_sector_mask(self):
+        # Initialize an empty mask
+        mask = np.zeros((self.size, self.size), dtype=np.uint8)
+        # Define the sector
+        angle = self.angle // 2
+        sector_points = [self.center]
+        for angle in range(-angle, angle+1):
+            x = int(self.center[0] + self.mask_r * np.cos(np.deg2rad(angle)))
+            y = int(self.center[1] + self.mask_r * np.sin(np.deg2rad(angle)))
+            sector_points.append((x, y))
+        sector_points = np.array([sector_points], dtype=np.int32)
+        # Fill the sector
+        cv2.fillPoly(mask, [sector_points], 1)
+        return mask
+
+    def transform_mask(self, new_center, rotation_angle):
+        rotation_angle = int(np.rad2deg(rotation_angle))
+        # Calculate transformation matrix for rotation and translation
+        rows, cols = self.mask.shape
+        M = cv2.getRotationMatrix2D((cols // 2, rows // 2), rotation_angle, 1)
+        rotated_mask = cv2.warpAffine(self.mask, M, (cols, rows))
+        # Translate mask to new center
+        translation_matrix = np.float32([[1, 0, new_center[0] - cols // 2], [0, 1, new_center[1] - rows // 2]])
+        translated_mask = cv2.warpAffine(rotated_mask, translation_matrix, (cols, rows))
+        return translated_mask
+
+    def get_intersection(self, diff, yaw1, yaw2):
+        mask1 = self.transform_mask(self.center, yaw1)
+        mask2 = self.transform_mask(self.center+diff, yaw2)
+        return mask1, mask1 & mask2
 
 class PCA:
     def __init__(self, n=3, profile='default_pca_profile.pkl', model='ViT-B-32'):

@@ -10,13 +10,14 @@ from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import PoseWithCovarianceStamped, PoseStamped
+from nav_msgs.msg import OccupancyGrid
 from cv_bridge import CvBridge
-from utils import PCA, CLIP
+from utils import PCA, CLIP, KFS
 import os
 import csv
 
 class CMAP(Node):
-    def __init__(self, profile='default_pca_profile.pkl'):
+    def __init__(self, profile='default_pca_profile.pkl', radius=10, resolution=0.05, angle=60):
         super().__init__('cmap_node')
         self.bridge = CvBridge() 
         self.image_sub = self.create_subscription(
@@ -29,9 +30,14 @@ class CMAP(Node):
             String, '/cmap/goal', self.goal_cb, 1)
         self.goal_pub = self.create_publisher(
             PoseStamped, '/goal_pose', 1)
+        self.map_sub = self.create_subscription(
+            OccupancyGrid, '/map', self.map_cb, 1)
         self.markers = MarkerArray()
         self.image = []
-        self.pose = PoseWithCovarianceStamped()
+        self.pose = None
+        self.pose_kf = None
+        self.map = None
+        self.map_kf = None
         self.folder = os.path.join(os.getcwd(), 'cmap')
         fn = os.path.join(self.folder, 'profiles')
         if not os.path.exists(fn): os.makedirs(fn)
@@ -39,8 +45,19 @@ class CMAP(Node):
             profile = os.path.join(fn, profile)
         self.pca = PCA(profile=profile)
         self.clip = CLIP()
+        self.radius = 5
+        self.angle = 40
+        self.kfs = KFS(radius, resolution, angle)
+        self.k = 500
+        self.k_ = 0
         self.features = []
-        self.k = 0
+        self.k_t = []
+
+    def map_cb(self, msg):
+        self.map = msg
+
+    def pose_cb(self, msg):
+        self.pose = msg
 
     def goal_cb(self, msg):
         text = msg.data
@@ -50,10 +67,12 @@ class CMAP(Node):
         t = int(datetime.fromtimestamp(self.features[idx][0]).strftime('%M%S%f'))/100
         self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(int(t)))
         ### debug ###
-        self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(self.features[idx][0]))
-        fn = os.path.join('/home/iram/images', 'rgb_04082250', str(self.features[idx][0]) + '.png')
-        im = cv2.imread(fn)
-        cv2.imwrite('/home/iram/images/exp0/'+text+'.png', im)
+        # self.get_logger().info('Goal: ' + msg.data + ' ID: ' + str(self.features[idx][0]))
+        # fn = os.path.join('/home/iram/images', 'rgb_04082250', str(self.features[idx][0]) + '.png')
+        # im = cv2.imread(fn)
+        # fd = '/home/iram/images/exp49/'
+        # if not os.path.exists(fd): os.makedirs(fd)
+        # cv2.imwrite(fd+text+'.png', im)
         ### debug ###
         goal = PoseStamped()
         goal.header.frame_id = "map"
@@ -68,13 +87,39 @@ class CMAP(Node):
     def encode_text(self, label):
         return self.clip.encode_text([label])
 
-    def pose_cb(self, msg):
-        self.pose = msg
-
-    def keyframe_selection(self, image):
+    def keyframe_selection(self):
         # Keyframe selection logic required
-        self.k += 1
-        if self.k % 30 == 0: return True
+        if self.map is None: return False
+        if self.pose is None: return False
+        if self.map_kf==None or self.pose_kf== None:
+            self.map_kf = self.map
+            self.pose_kf = self.pose
+            print('Initial Keyframe')
+            return True
+        # self.k_ += 1
+        # if self.k_ % 60 == 0: 
+        #     self.k_ = 0
+        #     self.pose_kf = self.pose
+        #     self.map_kf = self.map
+        #     return True
+        if abs(self.header.stamp.sec - self.pose.header.stamp.sec) > 3:
+            print(self.header.stamp.sec, self.pose.header.stamp.sec)
+            self.pose_kf = self.pose
+            self.map_kf = self.map
+            self.pose.header.stamp = self.header.stamp
+            print('Pose Time Mismatch')
+            return True
+        if self.pose == self.pose_kf: return False
+        k_t = self.kfs.weighted_sum(self.pose, self.pose_kf, self.map, self.map_kf)
+        print('K value:', k_t)
+        if abs(k_t) > self.k:
+            self.k_ = 0
+            self.k_t.append(k_t)
+            # cv2.imshow('mask', mask)
+            # cv2.waitKey(1)
+            self.pose_kf = self.pose
+            self.map_kf = self.map
+            return True
         return False
     
     def header_to_time(self, header, to_str=True, to_int=False):
@@ -107,7 +152,7 @@ class CMAP(Node):
         self.cmap_pub.publish(self.markers)
 
     def cmap(self):
-        if self.keyframe_selection(self.image):
+        if self.keyframe_selection():
             t = self.header_to_time(self.header, to_str=False)
             p, o = self.get_pose()
             f = self.encode_image(PIL.fromarray(self.image))
@@ -151,16 +196,39 @@ class CMAP(Node):
             # cv2.imwrite(filename, self.image)
             self.save_features()
 
+    def save_k_t(self):
+        folder = os.path.join(self.folder, 'results')
+        if not os.path.exists(folder): os.makedirs(folder)
+        fn = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '_k_t.csv'
+        fn = os.path.join(folder, fn)
+        with open(fn, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['k_t'])
+            for row in self.k_t:
+                writer.writerow([row])
+        self.get_logger().info('k_t Saved ' + fn)
+
 def main(args=None) :
     rclpy.init(args=args)
-    # profile = '2024-04-15_20-42-04_features_pca_profile.pkl'
+    profile = '2024-04-15_20-42-04_features_pca_profile.pkl'
+    # profile = 'default_pca_profile.pkl'
     # profile = ['livingroom', 'kitchen', 'bathroom']
-    node = CMAP(profile='default_pca_profile.pkl')
-    node.get_logger().info('CMAP Node Running')
-    node.get_logger().info('Press Enter to save features')
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    try:
+        node = CMAP(profile=profile)
+        node.get_logger().info('CMAP Node Running')
+        node.get_logger().info('Press Enter to save features')
+        rclpy.spin(node)
+        node.destroy_node()
+        rclpy.shutdown()
+    except KeyboardInterrupt:
+        node.save_features()
+        node.save_k_t()
+        node.destroy_node()
+        rclpy.shutdown()
+    except Exception as e:
+        print(e)
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__' :
   main()
