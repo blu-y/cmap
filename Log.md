@@ -213,7 +213,7 @@
   - Frontier의 cost에 heading angle 항목 추가
     - 이전에는 heading angle이 우선 -> cost로 추가해서 비교
       - 방법 1: heading angle 내부에서 -1500 주는 방법
-      - 방법 2: angle differenct(deg) * -100 하는 방법
+      - 방법 2: angle differenct(deg) * 100 하는 방법
 
 #### 2024-04-19~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
