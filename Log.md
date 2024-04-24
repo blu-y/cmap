@@ -191,9 +191,29 @@
   - 시뮬레이션 결과 오류가 발생하지 않음. rate가 조금씩 꾸준히 증가.
 - CMAP 논문 작성, 제출
 
-
-#### 2024-04-17~21
+#### 2024-04-18
+- Bunker
+  - Scan position 수정
+    - 이전 scan과의 distance 계산, >20m 일 때 다른 모든 scan과 >20m이면 scan.
 - CMAP 논문 수정, 제출
+
+#### 2024-04-19
+- Bunker
+  - Scan position, explore node와 상호작용
+  - Scan 중 explore 일시정지
+
+#### 2024-04-21~22
+- Bunker
+  - 최적 scan position으로 이동하도록 frontier의 cost에 추가
+    - scan position과의 거리가 20m일 때 cost가 가장 낮도록.
+    - min( abs(400-distance^2), 1200 )
+
+#### 2024-04-23
+- Bunker
+  - Frontier의 cost에 heading angle 항목 추가
+    - 이전에는 heading angle이 우선 -> cost로 추가해서 비교
+      - 방법 1: heading angle 내부에서 -1500 주는 방법
+      - 방법 2: angle differenct(deg) * -100 하는 방법
 
 #### 2024-04-19~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
