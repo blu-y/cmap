@@ -234,7 +234,8 @@
       - 하지만 docker 사용하는 이점도 있어 계속 사용
     - Text encoder(Tokenizer)에서 오류가 나서 수정 필요
   - Result
-    - 20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+    - ~~20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)~~
+    - 5.57 fps (179 ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
   - 새로운 HW에서의 카메라 해상도(현재는 250x250)를 고려하여 모델 선택 가능할 듯.
 
 #### 2024-05-08

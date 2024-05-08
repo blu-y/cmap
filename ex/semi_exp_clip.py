@@ -63,14 +63,18 @@ def get_ids(df):
 class CLIP:
     def __init__(self, model='ViT-B-16-SigLIP',
                  feature_path = './result/',
-                 device='cuda',
                  overwrite=False, fn=''):
         # model, preprocess = create_model_from_pretrained('ViT-B-16-SigLIP', pretrained='./ViT-B-16-SigLIP/open_clip_pytorch_model.bin')
         # tokenizer = get_tokenizer('ViT-B-16-SigLIP')
         # model, preprocess = create_model_from_pretrained('ViT-B-32-256', pretrained='./ViT-B-32-256/open_clip_pytorch_model.bin')
         # tokenizer = get_tokenizer('ViT-B-32-256')
         pt = './'+model+'/open_clip_pytorch_model.bin'
-        self.device = torch.device(0)
+        if torch.cuda.is_available():
+            self.cuda = True
+            self.device = torch.device('cuda')
+        else:
+            self.cuda = False
+            self.device = torch.device('cpu')
         self.model, self.preprocess = create_model_from_pretrained(model, pretrained=pt, device=self.device)
         self.tokenizer = get_tokenizer(model)
         try: self.dim = self.model.positional_embedding.size()[1]
@@ -117,10 +121,12 @@ class CLIP:
         with torch.no_grad(), torch.cuda.amp.autocast():
             try: 
                 image = self.preprocess(image).unsqueeze(0)
+                if self.cuda: image = image.to(self.device, dtype=torch.float16)
                 image_features = self.model.encode_image(image)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
                 image_features = image_features[0].tolist()
-            except:
+            except Exception as e:
+                print(e)
                 image_features = [0.0] * self.dim
                 pass
         return image_features
@@ -132,10 +138,8 @@ class CLIP:
         return text_features
 
     def similarity(self, image_features, text_features):
-        tf = text_features.cpu().numpy().T
-        print(image_features.shape, tf.shape)
-        print(image_features)
-        return image_features @ text_features.cpu().numpy().T
+        if self.cuda: return image_features @ text_features.cpu().numpy().T
+        else: return image_features @ text_features.numpy().T
     
 def plot(df_s, label_list, show=True):
     for l in label_list:
