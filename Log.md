@@ -229,15 +229,16 @@
 #### 2024-05-07
 - Jetson Orin Nano
   - Docker 사용하여 GPU 사용 성공
-    - 원인을 찾아본 결과 코드 내에 GPU 사용 오류
+    - 원인을 찾아본 결과 코드 내에서 GPU 사용 오류
       - docker을 사용하지 않아도 사용이 가능할 듯
       - 하지만 docker 사용하는 이점도 있어 계속 사용
+    - Text encoder(Tokenizer)에서 오류가 나서 수정 필요
   - Result
     - 20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
   - 새로운 HW에서의 카메라 해상도(현재는 250x250)를 고려하여 모델 선택 가능할 듯.
 
 #### 2024-05-08
-- 
+- Text encoder에서 오류가 나서 수정 필요
 
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
