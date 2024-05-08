@@ -215,27 +215,50 @@
       - 방법 1: heading angle 내부에서 -1500 주는 방법
       - 방법 2: angle differenct(deg) * 100 하는 방법
 
-#### 2024-04-19~
+#### 2024-04-24~26
+- CMAP 논문 작성
+
+#### 2024-05-02~03
+- Jetson Orin Nano (Restart)
+  - Docker 사용 환경설정
+
+#### 2024-05-06
+- Jetson Orin Nano
+  - Docker 환경에서 cmap 세팅 후 commit (cmap:0.1)
+
+#### 2024-05-07
+- Jetson Orin Nano
+  - Docker 사용하여 GPU 사용 성공
+    - 원인을 찾아본 결과 코드 내에 GPU 사용 오류
+      - docker을 사용하지 않아도 사용이 가능할 듯
+      - 하지만 docker 사용하는 이점도 있어 계속 사용
+  - Result
+    - 20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  
+  - 새로운 HW에서의 카메라 해상도(현재는 250x250)를 고려하여 모델 선택 가능할 듯.
+
+#### 2024-05-08
+- 
+
+#### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
 #### TODO
+- **Short Term**
   - Keyframe selection  (로봇이 천천히 움직이면 중복되는 프레임이 너무 많아져서 데이터가 너무 커진다 / viewpoint에 따라 keyframe인지 확인해야함)
   - Point에 image embedding mapping
   - Feature update
   - Exploration
   - HW 보완 Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
-
-
-#### TODO (장기)
-- Jetson Orin Nano experiment using docker
-- slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
-- 오검출 교차검증 필요, 알고리즘 보완해야함
-- AI Powered search
-- CLIP vector가 이미 normalized된 건지?
-- data diet
-- filtering points with multi camera view
-- how to choose keyframe (현재 사용하는 방식 조사, 보완, 좋은 화질의 frame 필요)
-- saving lesser dimension with dimension reduction techniques
-- GUI, search, sort
-- Other dimension reduction techniques (NMF, SVD, ICA)
+  - ~~Jetson Orin Nano experiment using docker~~(Done)
+- **Long Term**
+  - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
+  - 오검출 교차검증 필요, 알고리즘 보완해야함
+  - AI Powered search
+  - CLIP vector가 이미 normalized된 건지?
+  - data diet
+  - filtering points with multi camera view
+  - how to choose keyframe (현재 사용하는 방식 조사, 보완, 좋은 화질의 frame 필요)
+  - saving lesser dimension with dimension reduction techniques
+  - GUI, search, sort
+  - Other dimension reduction techniques (NMF, SVD, ICA)
