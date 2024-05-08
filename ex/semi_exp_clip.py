@@ -13,7 +13,6 @@ import os
 from robotathome import RobotAtHome, logger, log
 
 os.chdir(os.path.expanduser("~")+'/cmap')
-device = torch.device(0)
 
 def separate_session(df):
     hsi = df.home_session_id.unique()
@@ -64,13 +63,15 @@ def get_ids(df):
 class CLIP:
     def __init__(self, model='ViT-B-16-SigLIP',
                  feature_path = './result/',
+                 device='cuda',
                  overwrite=False, fn=''):
         # model, preprocess = create_model_from_pretrained('ViT-B-16-SigLIP', pretrained='./ViT-B-16-SigLIP/open_clip_pytorch_model.bin')
         # tokenizer = get_tokenizer('ViT-B-16-SigLIP')
         # model, preprocess = create_model_from_pretrained('ViT-B-32-256', pretrained='./ViT-B-32-256/open_clip_pytorch_model.bin')
         # tokenizer = get_tokenizer('ViT-B-32-256')
         pt = './'+model+'/open_clip_pytorch_model.bin'
-        self.model, self.preprocess = create_model_from_pretrained(model, pretrained=pt, device=device)
+        self.device = torch.device(0)
+        self.model, self.preprocess = create_model_from_pretrained(model, pretrained=pt, device=self.device)
         self.tokenizer = get_tokenizer(model)
         try: self.dim = self.model.positional_embedding.size()[1]
         except Exception as e:
@@ -90,7 +91,7 @@ class CLIP:
                 image = Image.open(img_f)
                 image_features = self.encode_image(image)
                 features.append(image_features)
-            print('average time: ', round((time()-start)/len(ids), 3))
+            print('average time: ', round((time()-start)/len(ids), 4))
             print('output dimension:', len(image_features))
             if not os.path.exists('./result'): os.makedirs('./result')
             with open(self.feature_file,"wb") as f:
@@ -125,13 +126,16 @@ class CLIP:
         return image_features
 
     def encode_text(self, label_list):
-        text = self.tokenizer(label_list, context_length=self.model.context_length)
+        text = self.tokenizer(label_list, context_length=self.model.context_length).to(self.device)
         with torch.no_grad(), torch.cuda.amp.autocast(): text_features = self.model.encode_text(text)
         text_features /= text_features.norm(dim=-1, keepdim=True)
         return text_features
 
     def similarity(self, image_features, text_features):
-        return image_features @ text_features.numpy().T
+        tf = text_features.cpu().numpy().T
+        print(image_features.shape, tf.shape)
+        print(image_features)
+        return image_features @ text_features.cpu().numpy().T
     
 def plot(df_s, label_list, show=True):
     for l in label_list:
@@ -150,7 +154,7 @@ def plot(df_s, label_list, show=True):
         plt.show()
 
 if __name__ == '__main__':
-    rh, df, ids = load_dataset('RGBD_1', scale=1)
+    rh, df, ids = load_dataset('RGBD_1', scale=10)
 
     # for particular session
     dfs = separate_session(df)
@@ -159,7 +163,8 @@ if __name__ == '__main__':
     df = df.reset_index(drop=True)
     ids = get_ids(df)
 
+    # clip = CLIP(model='ViT-B-16-SigLIP', overwrite=True)
     clip = CLIP(model='ViT-B-16-SigLIP', overwrite=True)
     labels = ["a shampoo", "bathroom", "a stove", "kitchen", "a television", "livingroom"]
     df_s, df_f = clip.encode_rh(rh, df, ids, label_list=labels)
-    plot(df_s, label_list = labels, show=False)
+    plot(df_s, label_list = labels, show=True)
