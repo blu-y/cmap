@@ -2,9 +2,7 @@ echo initial setting...
 apt update
 apt install pv vim -y
 vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
-sudo add-apt-repository ppa:canonical-chromium-builds/stage -y
-sudo apt update
-sudo apt install chromium-browser
+apt update
 
 echo cloning cmap repository...
 cd /home
