@@ -3,6 +3,7 @@ apt update
 apt install pv vim -y
 vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
 apt update
+snap install chromium
 
 echo cloning cmap repository...
 cd /home
