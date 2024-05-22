@@ -114,9 +114,9 @@
 - ~~Retry with clean installed ubuntu (with no conda) [🔗](log/10_jetson.md#installing-python-packages)
 - ~~Semi-exp with Jetson Orin Nano (CUDA)~~
     - ~~Result:  ~~
-    ~~0.66 fps (1504 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)  ~~
-    ~~2.07 fps (482 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs)  ~~
-    ~~2.56 fps (391 ms)  / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs)  ~~
+    ~~0.66 fps (1504 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)~~
+    ~~2.07 fps (482 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs)~~
+    ~~2.56 fps (391 ms)  / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs)~~
     - ~~torch.cuda.is_available() = True로 나왔으나 성능이 CPU Only와 똑같음. --> 추후 docker를 사용하여 재시도~~ (Solved)
 
 #### 2024-03-27~28
@@ -237,7 +237,7 @@
     - ~~20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)~~
   - 새로운 HW에서의 카메라 해상도(현재는 250x250)를 고려하여 모델 선택 가능할 듯.
 
-#### 2024-05-08
+#### 2024-05-08/21
 - Text encoder에서 오류가 나서 수정 필요
   - Result
     - 6.35 fps (158 ms) / Cortex A78AE / 1024-core Ampere / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)
