@@ -237,15 +237,23 @@
     - ~~20 fps (50 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)~~
   - 새로운 HW에서의 카메라 해상도(현재는 250x250)를 고려하여 모델 선택 가능할 듯.
 
-#### 2024-05-08/21
+#### 2024-05-08
 - Text encoder에서 오류가 나서 수정 필요
-  - Result
-    - 6.35 fps (158 ms) / Cortex A78AE / 1024-core Ampere / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)
-    - 13.85 fps (72 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
-    - 14.10 fps (71 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+  - Result(Jetson)
     - 14.69 fps (68 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32(151.28M params, 14.78B FLOPs)  
+    - 14.10 fps (71 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+    - 13.85 fps (72 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
+    - 6.35 fps (158 ms) / Cortex A78AE / 1024-core Ampere / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)
     - ~~-- fps (-- ms) / Cortex A78AE / 1024-core Ampere / ViT-H-14-quickgelu(986.11M params, 381.68B FLOPs)~~(failed)
 
+#### 2024-05-21
+  - Result(Laptop)
+    - 15.75 fps (64 ms) / i7-11370H / GeForce MX450 / ViT-B-32(151.28M params, 14.78B FLOPs)  
+    - 9.05 fps (111 ms) / i7-11370H / GeForce MX450 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
+    - 5.53 fps (181 ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
+    - ~~-- fps (-- ms) / i7-11370H / GeForce MX450 / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)~~(failed)
+    - ~~-- fps (-- ms) / i7-11370H / GeForce MX450 / ViT-H-14-quickgelu(986.11M params, 381.68B FLOPs)~~(failed)
+    
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
