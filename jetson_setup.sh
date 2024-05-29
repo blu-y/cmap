@@ -4,7 +4,15 @@ sudo apt install pv vim -y
 sudo vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
 sudo apt update
 sudo apt install python3-pip libopenblas-dev -y
+pip install --upgrade pip
 sudo -H pip install -U jetson-stats
+export TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v60/pytorch/torch-2.4.0a0+07cecf4168.nv24.05.14710581-cp310-cp310-linux_aarch64.whl
+pip install onnx
+pip install numpy=='1.26.1'
+pip install --no-cache $TORCH_INSTALL
+echo "export LD_LIBRARY_PATH=/usr/lib/llvm-8/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
+echo "export PATH=/home/jetson/.local/bin:$PATH" >> ~/.bashrc
+
 wget https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-aarch64.deb
 sudo dpkg -i rustdesk-1.2.3-2-aarch64.deb
 
