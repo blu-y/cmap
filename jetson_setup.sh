@@ -35,7 +35,6 @@ pv Robot@Home2_files.tgz | tar -xzf - -C ./files
 
 echo installing python packages
 cd ..
-pip install --upgrade pip
 pip install -r ./requirements.txt
 # pandas==2.2.2
 # matplotlib==3.8.4
