@@ -3,7 +3,7 @@ sudo apt update
 sudo apt install pv vim -y
 sudo vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
 sudo apt update
-sudo apt install python3-pip libopenblas-dev axel -y
+sudo apt install python3-pip libopenblas-dev axel pv -y
 pip install --upgrade pip
 sudo -H pip install -U jetson-stats
 export TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v60/pytorch/torch-2.4.0a0+07cecf4168.nv24.05.14710581-cp310-cp310-linux_aarch64.whl
