@@ -199,7 +199,7 @@ class CLIP:
         self.tokenizer = get_tokenizer(model)
         try: self.dim = self.model.positional_embedding.size()[1]
         except Exception as e:
-            print(e)
+            # print(e)
             self.dim = 1
 
     def encode_image(self, image):
