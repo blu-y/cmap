@@ -1,8 +1,8 @@
 echo initial setting...
-apt update
-apt install pv vim -y
-vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
-apt update
+sudo apt update
+sudo apt install pv vim -y
+sudo vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
+sudo apt update
 wget https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-aarch64.deb
 sudo dpkg -i rustdesk-1.2.3-2-aarch64.deb
 
