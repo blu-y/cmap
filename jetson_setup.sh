@@ -3,7 +3,7 @@ sudo apt update
 sudo apt install pv vim -y
 sudo vi /etc/apt/sources.list +%s/ports.ubuntu.com/ftp.kaist.ac.kr +wq!
 sudo apt update
-sudo apt install python3-pip
+sudo apt install python3-pip libopenblas-dev -y
 sudo -H pip install -U jetson-stats
 wget https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-aarch64.deb
 sudo dpkg -i rustdesk-1.2.3-2-aarch64.deb
