@@ -33,6 +33,10 @@ echo unzipping datasets
 pv Robot@Home2_db.tgz | tar -xzf - -C .
 pv Robot@Home2_files.tgz | tar -xzf - -C ./files
 
+wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
+sudo add-apt-repository "deb [arch=arm64] https://packages.microsoft.com/repos/vscode stable main" -y
+sudo apt install code
+
 echo installing python packages
 cd ..
 pip install -r ./requirements.txt
