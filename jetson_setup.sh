@@ -6,10 +6,9 @@ sudo apt update
 sudo apt install python3-pip libopenblas-dev axel pv -y
 pip install --upgrade pip
 sudo -H pip install -U jetson-stats
-export TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v60/pytorch/torch-2.4.0a0+07cecf4168.nv24.05.14710581-cp310-cp310-linux_aarch64.whl
-pip install onnx
 pip install numpy=='1.26.1'
-pip install --no-cache $TORCH_INSTALL
+echo "Follow this link to install pytorch on jetson"
+echo "https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048"
 echo "export LD_LIBRARY_PATH=/usr/lib/llvm-8/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
 echo "export PATH=/home/jetson/.local/bin:$PATH" >> ~/.bashrc
 source ~/.bashrc
