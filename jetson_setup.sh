@@ -15,6 +15,8 @@ source ~/.bashrc
 wget https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-aarch64.deb
 sudo dpkg -i rustdesk-1.2.3-2-aarch64.deb
 
+# sudo systemctl enable rustdesk
+
 echo cloning cmap repository...
 git clone https://github.com/blu-y/cmap.git
 cd cmap

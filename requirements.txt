@@ -1,5 +1,7 @@
 robotathome
 open_clip_torch
+pandas
+tqdm
 opencv-python
 matplotlib
 ipython
