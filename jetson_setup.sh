@@ -9,8 +9,8 @@ sudo -H pip install -U jetson-stats
 pip install numpy=='1.26.1'
 echo "Follow this link to install pytorch on jetson"
 echo "https://forums.developer.nvidia.com/t/pytorch-for-jetson/72048"
-echo "export LD_LIBRARY_PATH=/usr/lib/llvm-8/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
 echo "export PATH=/home/jetson/.local/bin:\$PATH" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=/usr/lib/llvm-8/lib:\$LD_LIBRARY_PATH" >> ~/.bashrc
 source ~/.bashrc
 wget https://github.com/rustdesk/rustdesk/releases/download/1.2.3-2/rustdesk-1.2.3-2-aarch64.deb
 sudo dpkg -i rustdesk-1.2.3-2-aarch64.deb
