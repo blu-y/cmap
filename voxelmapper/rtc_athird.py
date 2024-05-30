@@ -50,48 +50,59 @@ class CLIP:
         if self.cuda: return image_features @ text_features.cpu().numpy().T
         else: return image_features @ text_features.numpy().T
 
-def textlist():
+def textlist(default=False):
     texts = []
+    if default: return ['desk', 'chair', 'white board', 'bottle', 'cellphone', 'umbrella', 'fire extinguisher']
     while True:
         text = input("Input text(nothing to end): ")
         if text == "": 
-            if len(texts) == 0:
-                texts = ['desk', 'chair', 'white board', 'office', 'food', 'umbrella', 'fire extinguisher']
             break
         else : texts.append(text)
     print("Texts list:", texts)
     return texts
 
-def graphs(height, texts, similarity, fps):
-    g = np.zeros((height, height//2, 3), dtype=np.uint8)
+def graphs(width, texts, similarity):
+    g = np.zeros((width, width, 3), dtype=np.uint8)
+    g[:,-3:,:] = 255
     for i, text in enumerate(texts):
-        g = cv2.putText(g, text, (0, (2*(i+1))*height//(2*(len(texts)+2))), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-        g = cv2.putText(g, str(round(similarity[i],5)), (height//5, (2*(i+1)+1)*height//(2*(len(texts)+2))), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-    g = cv2.putText(g, f"FPS: {fps:.2f}", (0, height-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        g = cv2.putText(g, text, (width//10, (2*(i+1))*width//(2*(len(texts)+1))), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+        g = cv2.putText(g, str(round(similarity[i],4)), (width//5, (2*(i+1)+1)*width//(2*(len(texts)+1))), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
     return g
 
 if __name__ == "__main__":
     model = 'ViT-B-16-SigLIP' # 'ViT-B-32', 'ViT-B-32-256', 'ViT-B-16-SigLIP', 'ViT-L-14-quickgelu'
-    resolution = [1024, 576]
+    w = 1024
+    h = 576
+    n = 3
 
-    texts = textlist()
+    texts = textlist(default=True)
     clip = CLIP(model=model)
     text_f = clip.encode_text(texts)
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
+    cap.set(cv2.CAP_PROP_FPS, 30)
     t = time.time()
     while True:
         ret, frame = cap.read()
         if not ret:
             print('Failed to capture image')
             break
-        image_f = clip.encode_image(PIL.Image.fromarray(frame))
-        similarity = clip.similarity(image_f, text_f)
+        frames = []
+        for i in range(n):
+            frames.append(frame[:,:w//3,:])
+            frames.append(frame[:,w//3:w//3*2,:])
+            frames.append(frame[:,w//3*2:w//3*3,:])
+        imgs = []
+        for i in range(n):
+            image_f = clip.encode_image(PIL.Image.fromarray(frames[i]))
+            similarity = clip.similarity(image_f, text_f)
+            graph = graphs(frames[i].shape[1], texts, similarity)
+            imgs.append(np.concatenate((frames[i], graph), axis=0))
+        img = np.concatenate([imgs[i] for i in range(n)], axis=1)
         fps = 1 / (time.time() - t)
         t = time.time()
-        graph = graphs(frame.shape[0], texts, similarity, fps)
-        img = np.concatenate((frame, graph), axis=1)
+        img = cv2.putText(img, f"FPS: {fps:.2f}", (img.shape[1]-100, img.shape[0]-20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
         cv2.imshow('Similarity', img)
         key = cv2.waitKey(1)
         if key == 27: break
@@ -103,6 +114,3 @@ if __name__ == "__main__":
     cv2.destroyAllWindows()
 
     
-
-
-
