@@ -290,6 +290,12 @@
       - cosine similarity 순서로 정렬, 음수값 제외
       - log probability, linear probability 사용하여 localize
 
+#### 2024-06-08
+  - 3분할 처리
+    - keyframe selection (local)
+    - voxel에 vector, direction, distance 저장
+    - voxel update
+
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
