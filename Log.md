@@ -281,6 +281,14 @@
 #### 2024-06-07
   - Tracer Mini SLAM 정상 구동 확인
     - base 노드가 출력하는 base_link frame을 base_link_reversed로 변경, static tf publisher로 base_link frame을 reverse 시켜 publish
+  - 3분할 처리 프로세스
+    - Mapping:
+      - 현재 scan을 map 좌표계에서 voxelize (0.25 x 0.25 m)
+      - 3분할 CLIP vector을 각 화각의 voxel에 방향과 거리와 함께 저장
+      - 겹치는 부분은 거리, 방향에 따라 update (한 voxel에 근거리 8방향, 원거리 4방향으로 12방향으로 제한)(작은 공간에서도 용량이 커지는 문제 있음)
+    - Inference:
+      - cosine similarity 순서로 정렬, 음수값 제외
+      - log probability, linear probability 사용하여 localize
 
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
