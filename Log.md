@@ -246,20 +246,48 @@
     - 6.35 fps (158 ms) / Cortex A78AE / 1024-core Ampere / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)
     - ~~-- fps (-- ms) / Cortex A78AE / 1024-core Ampere / ViT-H-14-quickgelu(986.11M params, 381.68B FLOPs)~~(failed)
 
-#### 2024-05-21
+#### 2024-05-21~22
   - Result(Laptop)
     - 15.75 fps (64 ms) / i7-11370H / GeForce MX450 / ViT-B-32(151.28M params, 14.78B FLOPs)  
     - 9.05 fps (111 ms) / i7-11370H / GeForce MX450 / ViT-B-32-256(151.29M params, 17.46B FLOPs)  
     - 5.53 fps (181 ms) / i7-11370H / GeForce MX450 / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)
     - ~~-- fps (-- ms) / i7-11370H / GeForce MX450 / ViT-L-14-quickgelu(427.62M params, 175.33B FLOPs)~~(failed)
     - ~~-- fps (-- ms) / i7-11370H / GeForce MX450 / ViT-H-14-quickgelu(986.11M params, 381.68B FLOPs)~~(failed)
-    
+
+#### 2024-05-23~28
+  - CMAP Upgrade 방안
+    - Divide frame into 3 sub-frame and localize
+      - Map building 시 localize vs. Inference 시 localize
+      - Inference 시 localize하는 방법이 적절하다고 판단
+
+#### 2024-05-29~30
+  - Jetson Orin Nano Setup 파일 작성
+
+#### 2024-06-03~04
+  - Sub-frame semi experiment
+    - 3분할로 process하니 속도가 1/3, 이 부분은 병렬로 처리가 가능할지 의문
+  - Tracer Mini Setting [~~🔗~~](log/12_tracer.md)
+    - base setting
+    - LiDAR setting
+    - SLAM setting
+      - base_link의 x축이 반대로 되어있어 제대로 mapping되지 않음
+
+#### 2024-06-06
+  - Kinova Gen3 Lite Manipulator demo [🔗](log/13_kinova.md)
+    - 최신 Driver는 x86으로 작성되어서 Jetson에서 구동 불가
+    - 설정해준 Driver는 Jetson호환이지만 Gen3 Lite 세팅파일이 없음
+    - 두 파일을 합쳐서 일단 Jetson에서 Gen3 Lite 사용 가능하게 설정함
+
+#### 2024-06-07
+  - Tracer Mini SLAM 정상 구동 확인
+    - base 노드가 출력하는 base_link frame을 base_link_reversed로 변경, static tf publisher로 base_link frame을 reverse 시켜 publish
+
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
 #### TODO
 - **Short Term**
-  - Keyframe selection  (로봇이 천천히 움직이면 중복되는 프레임이 너무 많아져서 데이터가 너무 커진다 / viewpoint에 따라 keyframe인지 확인해야함)
+  - ~~Keyframe selection  (로봇이 천천히 움직이면 중복되는 프레임이 너무 많아져서 데이터가 너무 커진다 / viewpoint에 따라 keyframe인지 확인해야함)~~(Done, weighted keyframe selection)
   - Point에 image embedding mapping
   - Feature update
   - Exploration
@@ -267,13 +295,10 @@
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
   - ~~Jetson Orin Nano experiment using docker~~(Done)
 - **Long Term**
-  - slam toolbox에서 pose estimation할 때 odometry를 사용하는지?
   - 오검출 교차검증 필요, 알고리즘 보완해야함
   - AI Powered search
-  - CLIP vector가 이미 normalized된 건지?
   - data diet
   - filtering points with multi camera view
-  - how to choose keyframe (현재 사용하는 방식 조사, 보완, 좋은 화질의 frame 필요)
   - saving lesser dimension with dimension reduction techniques
   - GUI, search, sort
   - Other dimension reduction techniques (NMF, SVD, ICA)
