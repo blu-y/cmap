@@ -6,3 +6,5 @@ dataset/
 cmap/images/*.tar.xz
 cmap/results/*full.csv
 cmap/results/*.tar.xz
+athirdmapper/images/images/*.png
+voxelmapper/images/*.png
