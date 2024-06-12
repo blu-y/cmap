@@ -69,6 +69,28 @@ class CLIP:
                 image_features = [0.0] * self.dim
                 pass
         return image_features
+        
+    def encode_images(self, images):
+        self.available = False
+        new_images = []
+        for image in images:
+            if isinstance(image, np.ndarray): 
+                new_images.append(PIL.Image.fromarray(image))
+            else: new_images.append(image)
+        images = new_images
+        with torch.no_grad(), torch.cuda.amp.autocast():
+            try:
+                images = torch.stack([self.preprocess(image) for image in images])
+                if self.cuda: images = images.to(self.device, dtype=torch.float16)
+                image_features = self.model.encode_image(images)
+                image_features /= image_features.norm(dim=-1, keepdim=True)
+                image_features = image_features.tolist()
+            except Exception as e:
+                print(e)
+                image_features = [[0.0] * self.dim] * len(images)
+                pass
+        self.available = True
+        return image_features
 
     def encode_text(self, label_list):
         text = self.tokenizer(label_list, context_length=self.model.context_length).to(self.device)
@@ -115,19 +137,23 @@ if __name__ == "__main__":
         if isinstance(frame, int):
             print('Failed to capture image')
             break
-        frames = []
         cv2.imshow('original', frame)
         key = cv2.waitKey(1)
-        for i in range(n):
-            frames.append(frame[:,:w//3,:])
-            frames.append(frame[:,w//3:w//3*2,:])
-            frames.append(frame[:,w//3*2:w//3*3,:])
+        frames = []
+        frames.append(frame[:,:w//3,:])
+        frames.append(frame[:,w//3:w//3*2,:])
+        frames.append(frame[:,w//3*2:w//3*3,:])
         imgs = []
+        image_f_ = clip.encode_images(frames)
+        similarity = clip.similarity(image_f_, text_f)
+        print('batch', type(similarity), similarity.shape, type(image_f_), len(image_f_), len(image_f_[0]))
         for i in range(n):
-            image_f = clip.encode_image(PIL.Image.fromarray(frames[i]))
-            similarity = clip.similarity(image_f, text_f)
-            graph = graphs(frames[i].shape[1], texts, similarity)
+            # image_f = clip.encode_image(PIL.Image.fromarray(frames[i]))
+            # similarity = clip.similarity(image_f, text_f)
+            # graph = graphs(frames[i].shape[1], texts, similarity)
+            graph = graphs(frames[i].shape[1], texts, similarity[i])
             imgs.append(np.concatenate((frames[i], graph), axis=0))
+        # print('ones', type(similarity), similarity.shape, type(image_f), len(image_f))
         img = np.concatenate([imgs[i] for i in range(n)], axis=1)
         fps = 1 / (time.time() - t)
         t = time.time()

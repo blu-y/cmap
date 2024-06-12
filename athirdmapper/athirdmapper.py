@@ -5,11 +5,12 @@ import glob
 import rclpy
 import rclpy.logging
 from rclpy.node import Node
+from std_msgs.msg import String
 from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Image
+from geometry_msgs.msg import PointStamped, PoseStamped
 from tf2_ros.buffer import Buffer
 from tf2_geometry_msgs import do_transform_point # to transform
 from tf2_ros.transform_listener import TransformListener
-from geometry_msgs.msg import PointStamped
 from cv_bridge import CvBridge
 from math import cos, sin, inf
 import numpy as np
@@ -50,8 +51,32 @@ class CMAPNode(Node):
         self.scan_pub_L = self.create_publisher(PointCloud2, '/scan_L', 1)
         self.scan_pub_M = self.create_publisher(PointCloud2, '/scan_M', 1)
         self.scan_pub_R = self.create_publisher(PointCloud2, '/scan_R', 1)
+        self.cmap_goal_sub = self.create_subscription(
+            String, '/cmap/goal', self.goal_cb, 1)
+        self.goal_pub = self.create_publisher(
+            PoseStamped, '/goal_pose', 1)
         self.scan_subscription
-    
+        self.voxel_T = None
+
+    def get_goal(self, text):
+        ### TODO: Search goal with text input and features
+        text_encodings = self.clip.encode_text([text])
+        similarity = self.clip.similarity(self.features, text_encodings)
+        return x, y, w
+
+    def goal_cb(self, msg):
+        text = msg.data
+        goal = PoseStamped()
+        goal.header.frame_id = "map"
+        goal.header.stamp = self.get_clock().now().to_msg()
+        goal.pose.position.x, goal.pose.position.y, goal.pose.orientation.w = self.get_goal(text)
+        goal.pose.position.z = 0
+        goal.pose.orientation.x = 0
+        goal.pose.orientation.y = 0
+        goal.pose.orientation.z = 0
+        self.goal_pub.publish(goal)
+
+
     def set_camera(self, camera):
         if isinstance(camera, int):
             self.get_logger().info(f'Using USB camera {camera}')
@@ -91,6 +116,24 @@ class CMAPNode(Node):
             self.frame = PIL.Image.open(self.image_list[0])
             stamp = curr_
         return self.frame, stamp
+
+    def split_frame(self, frame):
+        if isinstance(frame, PIL.Image.Image):
+            w = frame.width
+            h = frame.height
+            L = frame.crop((0, 0, w//3, h))
+            M = frame.crop((w//3, 0, w//3*2, h))
+            R = frame.crop((w//3*2, 0, w//3*3, h))
+        if isinstance(frame, np.ndarray):
+            w = frame.shape[1]
+            L = frame[:,:w//3,:]
+            M = frame[:,w//3:w//3*2,:]
+            R = frame[:,w//3*2:w//3*3,:]
+        return L, M, R
+
+    def encode_frame(self, frame):
+        L, M, R = self.split_frame(frame)
+        self.features = (self.clip.encode_images([L, M, R]))
 
     def scan_callback(self, msg):
         self.scan = msg
@@ -137,9 +180,11 @@ class CMAPNode(Node):
                     points_.point.x = x
                     points_.point.y = y
                     points_ = self.tf_buffer.transform(points_, 'map')
+                    ### TODO:  deal with extrapolation
                     points.append([points_.point.x, points_.point.y, 0])
                     # 여기서 카메라 각도 안에 있는 것들도 필터해야함
                 p.append(points)
+            self.encode_frame(frame)
             header = scan.header
             header.frame_id = 'map'
             vr = self.voxelize(p[0])

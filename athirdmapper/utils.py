@@ -42,6 +42,28 @@ class CLIP:
         self.available = True
         return image_features
 
+    def encode_images(self, images):
+        self.available = False
+        new_images = []
+        for image in images:
+            if isinstance(image, np.ndarray): 
+                new_images.append(PIL.Image.fromarray(image))
+            else: new_images.append(image)
+        images = new_images
+        with torch.no_grad(), torch.cuda.amp.autocast():
+            try:
+                images = torch.stack([self.preprocess(image) for image in images])
+                if self.cuda: images = images.to(self.device, dtype=torch.float16)
+                image_features = self.model.encode_image(images)
+                image_features /= image_features.norm(dim=-1, keepdim=True)
+                image_features = image_features.tolist()
+            except Exception as e:
+                print(e)
+                image_features = [[0.0] * self.dim] * len(images)
+                pass
+        self.available = True
+        return image_features
+
     def encode_text(self, label_list):
         text = self.tokenizer(label_list, context_length=self.model.context_length).to(self.device)
         with torch.no_grad(), torch.cuda.amp.autocast(): text_features = self.model.encode_text(text)
@@ -58,6 +80,8 @@ class Camera:
     lock = Lock()
     capture=None
     def __init__(self, rtsp_link, w=1024, h=576):
+        self.w = w
+        self.h = h
         self.capture = cv2.VideoCapture(rtsp_link)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, w)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, h)

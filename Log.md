@@ -290,11 +290,13 @@
       - cosine similarity 순서로 정렬, 음수값 제외
       - log probability, linear probability 사용하여 localize
 
-#### 2024-06-08~11
+#### 2024-06-08~12
   - 3분할 처리
     - filtering scan points in camera angle(L,M,R)
     - voxelizing scan points
-    - minimize camera delay using threading
+    - minimize camera delay using threading (75%)
+    - enhanced performance in CLIP with batch (>1.5x)
+    - getting local images
     - voxel에 vector, direction, distance 저장
     - voxel update
     - keyframe selection
@@ -310,6 +312,7 @@
   - Exploration
   - HW 보완 Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
+  - TensorRT
   - ~~Jetson Orin Nano experiment using docker~~(Done)
 - **Long Term**
   - 오검출 교차검증 필요, 알고리즘 보완해야함
