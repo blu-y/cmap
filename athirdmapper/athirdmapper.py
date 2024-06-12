@@ -165,6 +165,7 @@ class CMAPNode(Node):
             else: scan.ranges = scan.ranges[self.scan_from:self.scan_to]
             size = len(scan.ranges)//3
             # transform = self.tf_buffer.lookup_transform('map', 'base_link', scan.header.stamp)
+            transform = self.tf_buffer.lookup_transform('map', scan.header.frame_id, rclpy.time.Time())
             sr, sm, sl = self.divide(scan.ranges)
             p = []
             for scans, j in zip([sr, sm, sl],[0, size, size*2]):
@@ -179,10 +180,9 @@ class CMAPNode(Node):
                     points_.header = scan.header
                     points_.point.x = x
                     points_.point.y = y
-                    points_ = self.tf_buffer.transform(points_, 'map')
-                    ### TODO:  deal with extrapolation
+                    # points_ = self.tf_buffer.transform(points_, 'map')
+                    points_ = do_transform_point(points_, transform)
                     points.append([points_.point.x, points_.point.y, 0])
-                    # 여기서 카메라 각도 안에 있는 것들도 필터해야함
                 p.append(points)
             self.encode_frame(frame)
             header = scan.header

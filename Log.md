@@ -300,6 +300,7 @@
   - 3분할 처리
     - enhanced performance in CLIP with batch (>1.5x)
     - getting local images
+    - tf extrapolation solved
 
 #### 2024-06-13~
   - 3분할 처리
