@@ -146,7 +146,6 @@ if __name__ == "__main__":
         imgs = []
         image_f_ = clip.encode_images(frames)
         similarity = clip.similarity(image_f_, text_f)
-        print('batch', type(similarity), similarity.shape, type(image_f_), len(image_f_), len(image_f_[0]))
         for i in range(n):
             # image_f = clip.encode_image(PIL.Image.fromarray(frames[i]))
             # similarity = clip.similarity(image_f, text_f)
