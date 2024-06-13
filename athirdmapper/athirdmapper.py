@@ -1,6 +1,5 @@
 import os
 import sys
-sys.path.append(os.getcwd())
 import glob
 import rclpy
 import rclpy.logging
@@ -19,9 +18,10 @@ import cv2
 from utils import *
 import time
 import PIL.Image
+sys.path.append(os.getcwd())
 
 class CMAPNode(Node):
-    def __init__(self, camera=0, model='ViT-B-16-SigLIP', leaf_size=0.25):
+    def __init__(self, camera=0, model='ViT-B-16-SigLIP', leaf_size=0.25, n_div=3):
         '''
         camera: int (if usb camera, ex) 0, 1, 2, ...)
                 str (if topic, ex) '/camera/image_raw')
@@ -36,9 +36,13 @@ class CMAPNode(Node):
         self.tf_listener = TransformListener(self.tf_buffer, self)
         self.scan = LaserScan()
         self.leaf_size = leaf_size
+        self.n_div = n_div
         # HFOV 67.983 deg
         self.scan_from = -103
         self.scan_to = 101
+        self.min_range = 0.5
+        self.features = []
+        self.features_ind = []
         self.fields = [
                 PointField(name='x', offset=0, datatype=PointField.FLOAT32, count=1),
                 PointField(name='y', offset=4, datatype=PointField.FLOAT32, count=1),
@@ -48,15 +52,16 @@ class CMAPNode(Node):
         self.last_frame_time = 0.0
         self.scan_subscription = self.create_subscription(
             LaserScan, '/scan', self.scan_callback, 1)
-        self.scan_pub_L = self.create_publisher(PointCloud2, '/scan_L', 1)
-        self.scan_pub_M = self.create_publisher(PointCloud2, '/scan_M', 1)
-        self.scan_pub_R = self.create_publisher(PointCloud2, '/scan_R', 1)
+        self.scan_pub = []
+        for i in range(self.n_div):
+            self.scan_pub.append(self.create_publisher(PointCloud2, f'/scan_{i}', 1))
         self.cmap_goal_sub = self.create_subscription(
             String, '/cmap/goal', self.goal_cb, 1)
         self.goal_pub = self.create_publisher(
             PoseStamped, '/goal_pose', 1)
         self.scan_subscription
         self.voxel_T = None
+        ### TODO: Create service to save map, features, features_ind
 
     def get_goal(self, text):
         ### TODO: Search goal with text input and features
@@ -75,7 +80,6 @@ class CMAPNode(Node):
         goal.pose.orientation.y = 0
         goal.pose.orientation.z = 0
         self.goal_pub.publish(goal)
-
 
     def set_camera(self, camera):
         if isinstance(camera, int):
@@ -118,90 +122,117 @@ class CMAPNode(Node):
         return self.frame, stamp
 
     def split_frame(self, frame):
+        frame_div = []
         if isinstance(frame, PIL.Image.Image):
             w = frame.width
             h = frame.height
-            L = frame.crop((0, 0, w//3, h))
-            M = frame.crop((w//3, 0, w//3*2, h))
-            R = frame.crop((w//3*2, 0, w//3*3, h))
+            for i in range(self.n_div):
+                frame_div.append(frame.crop((w//self.n_div*i, 0, w//self.n_div*(i+1), h)))
         if isinstance(frame, np.ndarray):
             w = frame.shape[1]
-            L = frame[:,:w//3,:]
-            M = frame[:,w//3:w//3*2,:]
-            R = frame[:,w//3*2:w//3*3,:]
-        return L, M, R
+            for i in range(self.n_div):
+                frame_div.append(frame[:,w//self.n_div*i:w//self.n_div*(i+1),:])
+        return frame_div
 
-    def encode_frame(self, frame):
-        L, M, R = self.split_frame(frame)
-        self.features = (self.clip.encode_images([L, M, R]))
+    def is_keyframe(self):
+        ### TODO: Check if the frame is keyframe
+        return True
 
-    def scan_callback(self, msg):
+    def encode_frame(self, frame, voxel_div):
+        frame_div = self.split_frame(frame)
+        features = (self.clip.encode_images(frame_div))
+        # features: [n_div] x [dim]
+        self.features += features
+        self.features_ind += voxel_div
+        # self.features: [n_div * frames] x [dim]
+        # self.features_ind: [n_div * frames] x [n_points] x [3]
+
+    def scan_callback(self, msg: LaserScan):
         self.scan = msg
-        self.transform_scan()
+        if self.clip.available: self.process_scan()
 
     def camera_callback(self, msg):
         self.frame = self.bridge.imgmsg_to_cv2(msg, 'bgr8')
 
-    def divide(self, points):
-        size = len(points)//3
-        return points[:size], points[size:size*2], points[size*2:]
+    def divide_ranges(self, points):
+        size = len(points)//self.n_div
+        ranges_div = [points[i*size:(i+1)*size] for i in range(self.n_div)]
+        # points[:size], points[size:size*2], points[size*2:]
+        return ranges_div
 
-    def voxelize(self, points):
-        array = np.array(points, dtype=np.float32)
-        quantized = np.round(array / self.leaf_size).astype(int)
-        unique_voxels = np.unique(quantized, axis=0)
-        data = unique_voxels * self.leaf_size
-        return data
+    def voxelize(self, points_div):
+        voxel_div = []
+        for i, points in enumerate(points_div):
+            array = np.array(points, dtype=np.float32)
+            quantized = np.round(array / self.leaf_size).astype(int)
+            unique_voxels = np.unique(quantized, axis=0) * self.leaf_size
+            voxel_div.append(unique_voxels.tolist())
+        # voxel_div: [n_div] x [n_points] x [3]
+        return voxel_div
 
-    def transform_scan(self):
-        if not self.clip.available: return
+    def transform_scan(self, scan: LaserScan):
+        size = len(scan.ranges)//self.n_div
+        # transform = self.tf_buffer.lookup_transform('map', 'base_link', scan.header.stamp)
+        transform = self.tf_buffer.lookup_transform('map', scan.header.frame_id, rclpy.time.Time())
+        ranges_div = self.divide_ranges(scan.ranges)
+        points_div = []
+        js = [i*size for i in range(self.n_div)]
+        for ranges_i, j in zip(ranges_div,js):
+            points = []
+            for i, _range in enumerate(ranges_i):
+                if _range == inf or _range == 'nan' or _range < self.min_range:
+                    continue
+                angle = scan.angle_min + (i+j+self.scan_from) * scan.angle_increment
+                x = _range * cos(angle)
+                y = _range * sin(angle)
+                points_ = PointStamped()
+                points_.header = scan.header
+                points_.point.x = x
+                points_.point.y = y
+                # points_ = self.tf_buffer.transform(points_, 'map')
+                points_ = do_transform_point(points_, transform)
+                points.append([points_.point.x, points_.point.y, 0])
+            points_div.append(points)
+        return points_div
+
+    def process_scan(self):
         try:
             scan = self.scan
             frame, stamp = self.get_frame(scan.header.stamp)
             if stamp == self.last_frame_time: return
+            if not self.is_keyframe(): return
             self.last_frame_time = stamp
             if self.scan_from < 0:
                 scan.ranges = scan.ranges[self.scan_from:] + scan.ranges[:self.scan_to]
             else: scan.ranges = scan.ranges[self.scan_from:self.scan_to]
-            size = len(scan.ranges)//3
-            # transform = self.tf_buffer.lookup_transform('map', 'base_link', scan.header.stamp)
-            transform = self.tf_buffer.lookup_transform('map', scan.header.frame_id, rclpy.time.Time())
-            sr, sm, sl = self.divide(scan.ranges)
-            p = []
-            for scans, j in zip([sr, sm, sl],[0, size, size*2]):
-                points = []
-                for i in range(len(scans)):
-                    if scans[i] == inf or scans[i] == 'nan' or scans[i] < 0.2:
-                        continue
-                    angle = scan.angle_min + (i+j+self.scan_from) * scan.angle_increment
-                    x = scans[i] * cos(angle)
-                    y = scans[i] * sin(angle)
-                    points_ = PointStamped()
-                    points_.header = scan.header
-                    points_.point.x = x
-                    points_.point.y = y
-                    # points_ = self.tf_buffer.transform(points_, 'map')
-                    points_ = do_transform_point(points_, transform)
-                    points.append([points_.point.x, points_.point.y, 0])
-                p.append(points)
-            self.encode_frame(frame)
+            points_div = self.transform_scan(scan)
             header = scan.header
             header.frame_id = 'map'
-            vr = self.voxelize(p[0])
-            vm = self.voxelize(p[1])
-            vl = self.voxelize(p[2])
-            self.scan_pub_R.publish(pc2.create_cloud(header, self.fields, vr))
-            self.scan_pub_M.publish(pc2.create_cloud(header, self.fields, vm))
-            self.scan_pub_L.publish(pc2.create_cloud(header, self.fields, vl))
-            self.get_logger().debug(f"Published {vr.shape[0]}, {vm.shape[0]}, {vl.shape[0]} points in map frame, {1/(time.time()-self.last_scan_time):.3f} fps")
+            voxel_div = self.voxelize(points_div)
+            self.encode_frame(frame, voxel_div)
+            for i, voxel_i in enumerate(voxel_div):
+                self.scan_pub[i].publish(pc2.create_cloud(header, self.fields, voxel_i))
+            self.get_logger().debug(f"Published {[len(voxel_i) for voxel_i in voxel_div]} points in map frame, {1/(time.time()-self.last_scan_time):.2f} fps")
             self.last_scan_time = time.time()
+            self.last_scan = scan
+            self.last_frame = frame
         except Exception as e:
             self.get_logger().warn(f'{e}')
+            import pickle
+            with open('./athirdmapper/features.pkl', 'wb') as f:
+                pickle.dump(self.features, f)
+            with open('./athirdmapper/features_ind.pkl', 'wb') as f:
+                pickle.dump(self.features_ind, f)
+            self.get_logger().info('Saved features and features_ind')
 
 def main(args=None):
+    # camera = 0
+    # camera = '/camera/image_raw'
+    camera = './athirdmapper/images/images'
+    n_div = 3
     rclpy.init(args=args)
     rclpy.logging.set_logger_level('cmap', rclpy.logging.LoggingSeverity.DEBUG)
-    node = CMAPNode(camera='./athirdmapper/images/images')
+    node = CMAPNode(camera=camera, n_div=n_div)
     rclpy.spin(node)
     rclpy.shutdown()
 

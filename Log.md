@@ -307,17 +307,20 @@
     - voxel에 vector, direction, distance 저장
     - voxel update
     - keyframe selection
+    - 10.1109/NCC.2015.7084843 / 10.1109/LSP.2012.2227726 / 10.1109/TIP.2012.2214050
       
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
 
 #### TODO
 - **Short Term**
+  - Ablation study (KFS, IQE)
   - ~~Keyframe selection  (로봇이 천천히 움직이면 중복되는 프레임이 너무 많아져서 데이터가 너무 커진다 / viewpoint에 따라 keyframe인지 확인해야함)~~(Done, weighted keyframe selection)
   - Point에 image embedding mapping
   - Feature update
   - Exploration
-  - HW 보완 Camera 높이 올리기, more cameras, PC에 직접 연결, 화각
+  - ~~HW 보완 Camera 높이 올리기, more cameras, PC에 직접 연결, 화각~~(Done)
+  - Backend Operation (Queue)
   - Lifelong mapping (맵 저장 및 로드, feature 저장 및 로드)
   - TensorRT
   - ~~Jetson Orin Nano experiment using docker~~(Done)
