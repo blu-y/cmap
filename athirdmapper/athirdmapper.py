@@ -41,6 +41,7 @@ class CMAPNode(Node):
         self.scan_from = -103
         self.scan_to = 101
         self.min_range = 0.5
+        self.max_range = 12.0
         self.features = []
         self.features_ind = []
         self.fields = [
@@ -66,7 +67,8 @@ class CMAPNode(Node):
     def get_goal(self, text):
         ### TODO: Search goal with text input and features
         text_encodings = self.clip.encode_text([text])
-        similarity = self.clip.similarity(self.features, text_encodings)
+        similarity = self.clip.similarity(self.features, text_encodings).squeeze()
+        # similarity: [n_features]
         return x, y, w
 
     def goal_cb(self, msg):
@@ -140,6 +142,10 @@ class CMAPNode(Node):
 
     def encode_frame(self, frame, voxel_div):
         frame_div = self.split_frame(frame)
+        # debug
+        for i in range(self.n_div):
+            cv2.imwrite(f'./athirdmapper/n_images/{len(self.features)+i}.png', np.array(frame_div[i]))
+        # end debug
         features = (self.clip.encode_images(frame_div))
         # features: [n_div] x [dim]
         self.features += features
@@ -180,8 +186,7 @@ class CMAPNode(Node):
         for ranges_i, j in zip(ranges_div,js):
             points = []
             for i, _range in enumerate(ranges_i):
-                if _range == inf or _range == 'nan' or _range < self.min_range:
-                    continue
+                if _range == inf or _range == 'nan' or _range < self.min_range or _range > self.max_range: continue
                 angle = scan.angle_min + (i+j+self.scan_from) * scan.angle_increment
                 x = _range * cos(angle)
                 y = _range * sin(angle)
@@ -212,7 +217,7 @@ class CMAPNode(Node):
             self.encode_frame(frame, voxel_div)
             for i, voxel_i in enumerate(voxel_div):
                 self.scan_pub[i].publish(pc2.create_cloud(header, self.fields, voxel_i))
-            self.get_logger().debug(f"Published {[len(voxel_i) for voxel_i in voxel_div]} points in map frame, {1/(time.time()-self.last_scan_time):.2f} fps")
+            self.get_logger().debug(f"{[len(voxel_i) for voxel_i in voxel_div]} points added in feature {len(self.features_ind)-1}, {1/(time.time()-self.last_scan_time):.2f} fps")
             self.last_scan_time = time.time()
             self.last_scan = scan
             self.last_frame = frame
@@ -223,7 +228,7 @@ class CMAPNode(Node):
                 pickle.dump(self.features, f)
             with open('./athirdmapper/features_ind.pkl', 'wb') as f:
                 pickle.dump(self.features_ind, f)
-            self.get_logger().info('Saved features and features_ind')
+            self.get_logger().info(f'Saved {len(self.features)} features and {len(self.features_ind)} features_ind')
 
 def main(args=None):
     # camera = 0
