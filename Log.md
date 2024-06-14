@@ -308,6 +308,10 @@
     - voxel update
     - keyframe selection
     - 10.1109/NCC.2015.7084843 / 10.1109/LSP.2012.2227726 / 10.1109/TIP.2012.2214050
+
+#### 2024-06-13~
+  - 3분할 처리
+    - ~~softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 similarity/n_point로 찾기~~(failed)
       
 #### 2024-04~
 - CMAP 패키지화 [🔗](log/11_cmap_node.md)
