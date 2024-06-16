@@ -304,10 +304,21 @@
   
 #### 2024-06-13~14
   - 3분할 처리
+    - 결과로 나온 features을 이용하여 입력 text에 해당하는 point 찾기
     - ~~softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 similarity/n_point로 찾기~~(failed)
 
 #### 2024-06-15~
   - 3분할 처리
+    - 결과로 나온 features을 이용하여 입력 text에 해당하는 point 찾기
+    - softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 similarity로 찾기
+    - softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 횟수로 찾기
+      - 두 실험 모두 비슷하긴 하지만 완전 정확한 곳으로 이동하지 못하는 것을 확인(같이 찍힌 다른 point들이 문제)
+        - 사용하는 range의 거리를 0.5m~5.0m로 제한
+    - tf data가 밀려서 제대로 voxel로 저장이 안되는 것을 확인
+      - multithread로 실행한 결과 tf는 밀리지 않았지만 clip 연산이 느려졌다(5~6fps -> 3fps)
+      - multithread를 2, 4, 6으로 모두 실행하여도 3fps으로 동일함.
+
+
     - voxel에 vector, direction, distance 저장
     - voxel update
     - keyframe selection
