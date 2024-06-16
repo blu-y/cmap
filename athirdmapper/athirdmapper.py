@@ -4,6 +4,7 @@ import glob
 import rclpy
 import rclpy.logging
 from rclpy.node import Node
+from rclpy.executors import MultiThreadedExecutor
 from std_msgs.msg import String
 from sensor_msgs.msg import LaserScan, PointCloud2, PointField, Image
 from geometry_msgs.msg import PointStamped, PoseStamped
@@ -18,6 +19,8 @@ import cv2
 from utils import *
 import time
 import PIL.Image
+import torch
+import torch.nn.functional as F
 sys.path.append(os.getcwd())
 
 class CMAPNode(Node):
@@ -32,7 +35,7 @@ class CMAPNode(Node):
         self.get_logger().info(f'CLIP model initializing to {model}')
         self.clip = CLIP(model)
         self.get_logger().info(f'CLIP model initialized')
-        self.tf_buffer = Buffer()
+        self.tf_buffer = Buffer(cache_time=rclpy.duration.Duration(seconds=10))
         self.tf_listener = TransformListener(self.tf_buffer, self)
         self.scan = LaserScan()
         self.leaf_size = leaf_size
@@ -40,8 +43,8 @@ class CMAPNode(Node):
         # HFOV 67.983 deg
         self.scan_from = -103
         self.scan_to = 101
-        self.min_range = 0.5
-        self.max_range = 12.0
+        self.min_range = 0.3
+        self.max_range = 3.0
         self.features = []
         self.features_ind = []
         self.fields = [
@@ -65,11 +68,36 @@ class CMAPNode(Node):
         ### TODO: Create service to save map, features, features_ind
 
     def get_goal(self, text):
-        ### TODO: Search goal with text input and features
+        f_ind = self.features_ind
         text_encodings = self.clip.encode_text([text])
-        similarity = self.clip.similarity(self.features, text_encodings).squeeze()
-        # similarity: [n_features]
-        return x, y, w
+        sim = self.clip.similarity(self.features, text_encodings).squeeze()*100
+        ssim = F.softmax(torch.tensor(sim), dim=0).numpy()
+        nsim = np.zeros_like(ssim)
+        nsim[ssim > 0.001] = 1
+        m = int(np.sum(nsim))
+        sim_sort_ind = np.argsort(sim, axis=0)[::-1]
+        sim_sort_ind = sim_sort_ind[:m]
+        conf = {}
+        for index in sim_sort_ind:
+            # print(len(features_ind[index]), features_ind[index])
+            s_i = sim[index]
+            n_point = len(f_ind[index])
+            for point in f_ind[index]:
+                [_s, _n] = conf.get(tuple(point), [0,0])
+                conf[tuple(point)] = [(_s * _n + s_i) / (_n + 1), _n + 1]
+        # sort confidence by value
+        conf_score = dict(sorted(conf.items(), key=lambda item: item[1], reverse=True))
+        conf_freq = dict(sorted(conf.items(), key=lambda item: item[1][1], reverse=True))
+        ks = list(conf_score.keys())
+        vs = list(conf_score.values())
+        kf = list(conf_freq.keys())
+        vf = list(conf_freq.values())
+        [x, y, _] = kf[0]
+        self.get_logger().info(f'Goal: {text}, {x:.2f}, {y:.2f}, {vf[0][1]:.2f}, {vf[0][1]}')
+        self.get_logger().debug(f'Keys in conf:\n\t{ks[:min(5, len(ks))]}\n\t{vs[:min(5, len(vs))]}')
+        self.get_logger().debug(f'Keys in freq:\n\t{kf[:min(5, len(kf))]}\n\t{vf[:min(5, len(vf))]}')
+        # TODO: get w
+        return x, y, 1.0#w
 
     def goal_cb(self, msg):
         text = msg.data
@@ -77,10 +105,10 @@ class CMAPNode(Node):
         goal.header.frame_id = "map"
         goal.header.stamp = self.get_clock().now().to_msg()
         goal.pose.position.x, goal.pose.position.y, goal.pose.orientation.w = self.get_goal(text)
-        goal.pose.position.z = 0
-        goal.pose.orientation.x = 0
-        goal.pose.orientation.y = 0
-        goal.pose.orientation.z = 0
+        goal.pose.position.z = 0.0
+        goal.pose.orientation.x = 0.0
+        goal.pose.orientation.y = 0.0
+        goal.pose.orientation.z = 0.0
         self.goal_pub.publish(goal)
 
     def set_camera(self, camera):
@@ -144,7 +172,8 @@ class CMAPNode(Node):
         frame_div = self.split_frame(frame)
         # debug
         for i in range(self.n_div):
-            cv2.imwrite(f'./athirdmapper/n_images/{len(self.features)+i}.png', np.array(frame_div[i]))
+            # frame_div[i].save(f'./athirdmapper/n_images/{len(self.features)+i}.png')
+            cv2.imwrite(f'./athirdmapper/n_images/{len(self.features)+i}.png', cv2.cvtColor(np.array(frame_div[i]), cv2.COLOR_RGB2BGR))
         # end debug
         features = (self.clip.encode_images(frame_div))
         # features: [n_div] x [dim]
@@ -238,8 +267,16 @@ def main(args=None):
     rclpy.init(args=args)
     rclpy.logging.set_logger_level('cmap', rclpy.logging.LoggingSeverity.DEBUG)
     node = CMAPNode(camera=camera, n_div=n_div)
-    rclpy.spin(node)
-    rclpy.shutdown()
+    executer = MultiThreadedExecutor(num_threads=2)
+    executer.add_node(node)
+    try:
+        # rclpy.spin(node)
+        executer.spin()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
