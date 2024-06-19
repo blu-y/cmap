@@ -156,11 +156,11 @@ class CMAPNode(Node):
         if isinstance(frame, PIL.Image.Image):
             w = frame.width
             h = frame.height
-            for i in range(self.n_div):
+            for i in reversed(range(self.n_div)):
                 frame_div.append(frame.crop((w//self.n_div*i, 0, w//self.n_div*(i+1), h)))
         if isinstance(frame, np.ndarray):
             w = frame.shape[1]
-            for i in range(self.n_div):
+            for i in reversed(range(self.n_div)):
                 frame_div.append(frame[:,w//self.n_div*i:w//self.n_div*(i+1),:])
         return frame_div
 
