@@ -10,3 +10,4 @@ athirdmapper/images/images/*.png
 athirdmapper/images/*/*.png
 athirdmapper/n_images/*.png
 voxelmapper/images/*.png
+athirdmapper/exp*/*
