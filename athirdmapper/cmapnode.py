@@ -126,7 +126,7 @@ class CMAPNode(Node):
                 self.image_list.sort()
                 self.get_logger().info(f'Found {len(self.image_list)} images')
                 self.frame = PIL.Image.open(self.image_list[0])
-                self.last_utc = os.path.basename(self.image_list[0]).split('.')[0]
+                self.last_utc = os.path.basename(self.image_list[0]).rsplit('.',1)[0]
             else:
                 self.get_logger().info(f'Using ROS camera topic {camera}')
                 self.camera = 'ros'
@@ -145,15 +145,12 @@ class CMAPNode(Node):
         elif self.camera == 'local':
             stamp = stamp.sec + stamp.nanosec * 1e-9
             while True:
-                # curr_ = os.path.basename(self.image_list[0]).split('.')[0]
-                # next_ = os.path.basename(self.image_list[1]).split('.')[0]
-                # if float(next_) > stamp: break
-                curr_ = os.path.basename(self.image_list[0]).split('.')[0]
-                next_ = os.path.basename(self.image_list[1]).split('.')[0]
+                curr_ = os.path.basename(self.image_list[0]).rsplit('.',1)[0]
+                next_ = os.path.basename(self.image_list[1]).rsplit('.',1)[0]
                 if float(next_) > stamp: break
                 self.image_list.pop(0)
             self.frame = PIL.Image.open(self.image_list[0])
-        self.get_logger().debug(f'Requested time: {stamp}, Frame time: {curr_}')
+        # self.get_logger().debug(f'Requested time: {stamp}, Frame time: {curr_}')
         return self.frame, float(curr_)
 
     def split_frame(self, frame):
