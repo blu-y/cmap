@@ -124,7 +124,7 @@ class CMAPNode(Node):
                 self.image_list.sort()
                 self.get_logger().info(f'Found {len(self.image_list)} images')
                 self.frame = PIL.Image.open(self.image_list[0])
-                self.last_utc = make_utc(self.image_list[0])
+                self.last_utc = os.path.basename(self.image_list[0]).split('.')[0]
             else:
                 self.get_logger().info(f'Using ROS camera topic {camera}')
                 self.camera = 'ros'
@@ -143,9 +143,9 @@ class CMAPNode(Node):
         elif self.camera == 'local':
             stamp = stamp.sec + stamp.nanosec * 1e-9
             while True:
-                curr_ = make_utc(self.image_list[0])
-                next_ = make_utc(self.image_list[1])
-                if next_ > stamp: break
+                curr_ = os.path.basename(self.image_list[0]).split('.')[0]
+                next_ = os.path.basename(self.image_list[1]).split('.')[0]
+                if float(next_) > stamp: break
                 self.image_list.pop(0)
             self.frame = PIL.Image.open(self.image_list[0])
             stamp = curr_
@@ -262,16 +262,16 @@ class CMAPNode(Node):
 def main(args=None):
     # camera = 0
     # camera = '/camera/image_raw'
-    camera = './athirdmapper/images/images'
+    camera = './athirdmapper/images/240622_1514'
     n_div = 3
     rclpy.init(args=args)
     rclpy.logging.set_logger_level('cmap', rclpy.logging.LoggingSeverity.DEBUG)
     node = CMAPNode(camera=camera, n_div=n_div)
-    executer = MultiThreadedExecutor(num_threads=2)
-    executer.add_node(node)
+    # executer = MultiThreadedExecutor(num_threads=2)
+    # executer.add_node(node)
     try:
-        # rclpy.spin(node)
-        executer.spin()
+        rclpy.spin(node)
+        # executer.spin()
     except KeyboardInterrupt:
         pass
     finally:

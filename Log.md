@@ -307,22 +307,41 @@
     - 결과로 나온 features을 이용하여 입력 text에 해당하는 point 찾기
     - ~~softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 similarity/n_point로 찾기~~(failed)
 
-#### 2024-06-15~
+#### 2024-06-15
   - 3분할 처리
     - 결과로 나온 features을 이용하여 입력 text에 해당하는 point 찾기
     - softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 similarity로 찾기
     - softmax similarity로 정렬 후 0.01로 cut한 후 해당 frame에서 각 point에 누적된 횟수로 찾기
-      - 두 실험 모두 비슷하긴 하지만 완전 정확한 곳으로 이동하지 못하는 것을 확인(같이 찍힌 다른 point들이 문제)
+      - ~~두 실험 모두 비슷하긴 하지만 완전 정확한 곳으로 이동하지 못하는 것을 확인(같이 찍힌 다른 point들이 문제)~~(해결)
         - 사용하는 range의 거리를 0.5m~5.0m로 제한
     - tf data가 밀려서 제대로 voxel로 저장이 안되는 것을 확인
       - multithread로 실행한 결과 tf는 밀리지 않았지만 clip 연산이 느려졌다(5~6fps -> 3fps)
       - multithread를 2, 4, 6으로 모두 실행하여도 3fps으로 동일함.
 
+#### 2024-06-19
+  - 3분할 처리
+    - 정확도 문제를 해결하기 위해 확인해 본 결과
+    - 카메라 frame은 cw로 indexing 한 반면, lidar는 ccw로 indexing한 것을 확인
+    - 해당 오류 해결하니 제대로 작동함.
 
-    - voxel에 vector, direction, distance 저장
-    - voxel update
-    - keyframe selection
-    - 10.1109/NCC.2015.7084843 / 10.1109/LSP.2012.2227726 / 10.1109/TIP.2012.2214050
+#### 2024-06-20,22
+  - 긴 시간의 sequence를 실험하기 위한 데이터 수집
+    - exp0620, exp0622
+  - space도 넓게 복도까지 포함(복도에서 SLAM이 삐뚤어지는 것을 확인)
+
+#### 2024-06-23
+  - PPT작성
+
+#### 2024-06-24
+  - 3분할 처리
+    - exp0622 파일 테스트
+      - 프레임이 1fps정도 나오는 것을 확인
+      - local 이미지 처리를 하는 과정에서 get_frame이 제대로 되지 않는 것 같음
+      - 이전에 실험된 것들도 재확인 필요
+  
+TODO: 
+  - keyframe selection 적용
+  - voxel update (이미지 품질을 확인하는 과정이 필요)
 
       
 #### 2024-04~
