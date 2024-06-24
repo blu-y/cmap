@@ -9,4 +9,4 @@ cmap/results/*.tar.xz
 athirdmapper/images/*
 athirdmapper/n_images/*
 voxelmapper/images/*
-athirdmapper/exp*/*
+athirdmapper/exp*/n_images/*
