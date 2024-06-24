@@ -153,8 +153,8 @@ class CMAPNode(Node):
                 if float(next_) > stamp: break
                 self.image_list.pop(0)
             self.frame = PIL.Image.open(self.image_list[0])
-            stamp = curr_
-        return self.frame, stamp
+        self.get_logger().debug(f'Requested time: {stamp}, Frame time: {curr_}')
+        return self.frame, float(curr_)
 
     def split_frame(self, frame):
         frame_div = []
