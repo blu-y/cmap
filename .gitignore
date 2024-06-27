@@ -10,3 +10,4 @@ athirdmapper/images/*
 athirdmapper/n_images/*
 voxelmapper/images/*
 athirdmapper/exp*/n_images/*
+athirdmapper/exp*/*.tar.xz
