@@ -68,11 +68,20 @@ class CLIP:
         text = self.tokenizer(label_list, context_length=self.model.context_length).to(self.device)
         with torch.no_grad(), torch.cuda.amp.autocast(): text_features = self.model.encode_text(text)
         text_features /= text_features.norm(dim=-1, keepdim=True)
+        text_features = text_features.tolist()
+        if len(label_list) == 1: text_features = text_features[0]
         return text_features
 
-    def similarity(self, image_features, text_features):
-        if self.cuda: return image_features @ text_features.cpu().numpy().T
-        else: return image_features @ text_features.numpy().T
+    # def similarity(self, image_features, text_features):
+    #     if self.cuda: return image_features @ text_features.cpu().numpy().T
+    #     else: return image_features @ text_features.numpy().T
+
+    def similarity(image_features, text_features):
+        if isinstance(image_features, list): image_features = np.array(image_features)
+        if isinstance(text_features, list): text_features = np.array(text_features)
+        if torch.cuda.is_available(): 
+            return image_features @ text_features.cpu().numpy().T
+        return np.dot(image_features, text_features.T)
 
 class Camera:
     last_frame = None
