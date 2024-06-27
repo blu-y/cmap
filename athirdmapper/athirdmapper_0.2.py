@@ -264,14 +264,17 @@ def main(args=None):
     # camera = '/camera/image_raw'
     camera = './athirdmapper/images/images'
     n_div = 3
+    thread = 2
     rclpy.init(args=args)
     rclpy.logging.set_logger_level('cmap', rclpy.logging.LoggingSeverity.DEBUG)
     node = CMAPNode(camera=camera, n_div=n_div)
-    executer = MultiThreadedExecutor(num_threads=2)
-    executer.add_node(node)
+    if thread > 1:
+        executer = MultiThreadedExecutor(num_threads=thread)
+        executer.add_node(node)
     try:
-        # rclpy.spin(node)
-        executer.spin()
+        if thread > 1:
+            executer.spin()
+        else: rclpy.spin(node)
     except KeyboardInterrupt:
         pass
     finally:
