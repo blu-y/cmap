@@ -343,11 +343,15 @@
   - Experiment with 4 ViT, n=1,2,3,4,5
   - 발표자료 만들기
 
-
 #### 2024-07-01~10
   - 학회 발표 및 논문 작성 마무리
 
-    
+#### 2024-07-12
+  - 방학 중 계획
+      - 패키지 완성
+      - LLM finetuning / Jetson embedding
+      - Manipulator demo
+
 TODO: 
   - keyframe selection 적용
   - voxel update (이미지 품질을 확인하는 과정이 필요)
