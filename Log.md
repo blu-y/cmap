@@ -315,7 +315,7 @@
       - ~~두 실험 모두 비슷하긴 하지만 완전 정확한 곳으로 이동하지 못하는 것을 확인(같이 찍힌 다른 point들이 문제)~~(해결)
         - 사용하는 range의 거리를 0.5m~5.0m로 제한
     - tf data가 밀려서 제대로 voxel로 저장이 안되는 것을 확인
-      - multithread로 실행한 결과 tf는 밀리지 않았지만 clip 연산이 느려졌다(5~6fps -> 3fps)
+      - multithread로 실행한 결과 tf는 밀리지 않았지만 clip 연산이 느려졌다(5~6fps -> 4fps)
       - multithread를 2, 4, 6으로 모두 실행하여도 3fps으로 동일함.
 
 #### 2024-06-19
@@ -336,7 +336,22 @@
   - 3분할 처리
     - exp0622 파일 테스트
       - ~~프레임이 1fps정도 나오는 것을 확인~~(해결, split하는 과정에서 오류가 있었음)
-  
+
+#### 2024-06-25~30
+  - Mapsaver
+  - Probability map generation
+  - Experiment with 4 ViT, n=1,2,3,4,5
+  - 발표자료 만들기
+
+#### 2024-07-01~10
+  - 학회 발표 및 논문 작성 마무리
+
+#### 2024-07-12
+  - 방학 중 계획
+      - 패키지 완성
+      - LLM finetuning / Jetson embedding
+      - Manipulator demo
+
 TODO: 
   - keyframe selection 적용
   - voxel update (이미지 품질을 확인하는 과정이 필요)
