@@ -12,7 +12,7 @@ from open_clip import create_model_from_pretrained, get_tokenizer
 
 class CLIP:
     def __init__(self, model='ViT-B-32'):
-        pt = './'+model+'/open_clip_pytorch_model.bin'
+        pt = './models/'+model+'/open_clip_pytorch_model.bin'
         if torch.cuda.is_available():
             self.cuda = True
             self.device = torch.device('cuda')

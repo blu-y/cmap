@@ -194,7 +194,7 @@ class PCA:
 
 class CLIP:
     def __init__(self, model='ViT-B-32'):
-        pt = './'+model+'/open_clip_pytorch_model.bin'
+        pt = './models/'+model+'/open_clip_pytorch_model.bin'
         self.model, self.preprocess = create_model_from_pretrained(model, pretrained=pt)
         self.tokenizer = get_tokenizer(model)
         try: self.dim = self.model.positional_embedding.size()[1]

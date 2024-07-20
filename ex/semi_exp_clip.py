@@ -68,7 +68,7 @@ class CLIP:
         # tokenizer = get_tokenizer('ViT-B-16-SigLIP')
         # model, preprocess = create_model_from_pretrained('ViT-B-32-256', pretrained='./ViT-B-32-256/open_clip_pytorch_model.bin')
         # tokenizer = get_tokenizer('ViT-B-32-256')
-        pt = './'+model+'/open_clip_pytorch_model.bin'
+        pt = './models/'+model+'/open_clip_pytorch_model.bin'
         if torch.cuda.is_available():
             self.cuda = True
             self.device = torch.device('cuda')
