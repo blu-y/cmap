@@ -111,7 +111,7 @@
 
 #### 2024-03-25
 - ~~Jetson Orin Nano CUDA Solved, but performance is same with CPU only~~ (Solved)
-- ~~Retry with clean installed ubuntu (with no conda) [🔗](log/10_jetson.md#installing-python-packages)
+- Retry with clean installed ubuntu (with no conda) [🔗](log/10_jetson.md#installing-python-packages)
 - ~~Semi-exp with Jetson Orin Nano (CUDA)~~
     - ~~Result:  ~~
     ~~0.66 fps (1504 ms) / Cortex A78AE / 1024-core Ampere / ViT-B-16-SigLIP(203.16M params, 46.44B FLOPs)~~
